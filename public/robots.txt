@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://joshgutierrez56.github.io/sitemap.xml

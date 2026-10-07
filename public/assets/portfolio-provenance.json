@@ -1,0 +1,10 @@
+{
+  "published_scope": "Three aggregate method comparisons only; no identifiers or security-level data.",
+  "source": "Personalized Model Portfolios, scenario_summary.csv, completed September 30 2026",
+  "source_sha256": "55d48175d52c1b023da7feec82f46b670c07b39a97ddc6e82a6b5d6abdd2a805",
+  "evaluation": "2014-01-02 to 2025-12-31",
+  "assumed_cost_bps_per_dollar_traded": 5,
+  "fixed_etf_universe_count": 8,
+  "current_database_vintage": true,
+  "not_actual_client_or_execution_results": true
+}

@@ -1,0 +1,12 @@
+/* Minimal base normalization previously supplied by the website scaffold. */
+*,::before,::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; tab-size: 4; color-scheme: light; }
+body { margin: 0; background: #f5f7fb; }
+button,input,select,textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button,input { margin: 0; }
+button { background: transparent; border: 0 solid; }
+img,svg { vertical-align: middle; }
+img { display: block; max-width: 100%; }
+ul,ol { margin: 0; padding: 0; }
+summary { display: list-item; }
+table { text-indent: 0; border-collapse: collapse; border-color: inherit; }
