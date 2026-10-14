@@ -1178,3 +1178,95 @@
     font-size: 11px;
   }
 }
+/* Project stories: summary first, original evidence one step deeper. */
+.p-start { padding-block: 42px 64px; border-top: 1px solid var(--p-line); }
+.p-start-heading { max-width: 740px; margin-bottom: 30px; }
+.p-start-heading h2 { font-size: clamp(30px, 3vw, 42px); margin: 14px 0; }
+.p-start-heading > p:last-child { font-size: 15px; color: var(--p-muted); }
+.p-story-routes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.p-story-route { border-top: 2px solid var(--p-blue); padding: 22px 18px 22px 0; transition: background .18s; }
+.p-story-route:hover { background: #eaf0f9; }
+.p-route-meta { display: flex; align-items: center; gap: 12px; font: 11px var(--p-mono); color: var(--p-blue); }
+.p-route-meta svg { margin-left: auto; }
+.p-story-route h3 { font-size: 25px; margin: 22px 0 13px; }
+.p-story-route p { font-size: 14px; line-height: 1.75; color: var(--p-muted); }
+.p-project-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.p-story-card { min-width: 0; background: #fff; border: 1px solid var(--p-line); scroll-margin-top: 26px; }
+.p-story-visual { min-width: 0; background: #edf2fa; border-bottom: 1px solid var(--p-line); }
+.p-story-copy { padding: 30px; min-width: 0; }
+.p-story-kicker { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.p-story-kicker > span:first-child { font: 10px var(--p-mono); color: var(--p-blue); text-transform: uppercase; letter-spacing: .025em; }
+.p-story-kicker .p-status { font-size: 9px; white-space: normal; }
+.p-story-card h3 { font-size: clamp(26px, 2.5vw, 35px); line-height: 1.14; max-width: 560px; }
+.p-story-subtitle { color: var(--p-muted); font-size: 15px; line-height: 1.75; margin-top: 15px !important; }
+.p-story-takeaway { margin-top: 23px; padding-left: 16px; border-left: 2px solid var(--p-blue); }
+.p-story-takeaway .p-label { font-size: 10px; }
+.p-story-takeaway p { font-size: 15px; line-height: 1.7; margin-top: 7px; }
+.p-story-scope { font-size: 12px; line-height: 1.65; color: var(--p-muted); margin-top: 15px !important; }
+.p-story-detail { border-block: 1px solid var(--p-line); margin-top: 24px; }
+.p-story-detail > summary, .p-story-evidence > summary { display: flex; justify-content: space-between; align-items: center; gap: 15px; list-style: none; cursor: pointer; color: var(--p-blue); min-height: 48px; font-size: 14px; font-weight: 600; padding: 12px 0; }
+.p-story-detail > summary::-webkit-details-marker, .p-story-evidence > summary::-webkit-details-marker { display: none; }
+.p-story-detail > summary > span:last-child { font-size: 24px; font-weight: 400; }
+.p-story-expanded { padding: 10px 0 24px; }
+.p-short-story { background: #edf3fc; border-left: 3px solid var(--p-blue); padding: 22px; }
+.p-short-story > p:last-child { font-size: 16px; line-height: 1.85; margin-top: 13px; }
+.p-story-workflow { list-style: none; margin-block: 28px; }
+.p-story-workflow li { display: flex; gap: 17px; padding: 14px 0; border-bottom: 1px solid var(--p-line); }
+.p-step-number { flex-shrink: 0; color: var(--p-blue); font: 11px var(--p-mono); padding-top: 5px; }
+.p-story-card h4 { font: 600 15px/1.5 "DM Sans", sans-serif; margin: 0 0 7px; color: var(--p-ink); }
+.p-story-workflow p, .p-story-chapters p, .p-story-next p { font-size: 14px; line-height: 1.85; color: var(--p-muted); }
+.p-story-chapters { display: grid; gap: 23px; }
+.p-story-next { margin-top: 24px; padding-top: 21px; border-top: 1px solid var(--p-line); }
+.p-discussion { margin-top: 24px; background: #f5f7fb; padding: 21px; }
+.p-discussion ul { padding-left: 18px; font-size: 14px; color: var(--p-muted); line-height: 1.8; }
+.p-discussion li + li { margin-top: 8px; }
+.p-story-evidence { border-top: 1px solid var(--p-line); margin-top: 26px; }
+.p-story-evidence > summary { font-size: 12px; font-weight: 500; }
+.p-story-evidence > div > p { font-size: 13px; line-height: 1.8; color: var(--p-muted); margin-top: 12px; }
+.p-project-permalink { display: inline-flex; align-items: center; gap: 9px; margin-top: 16px; font-size: 12px; color: var(--p-blue) !important; }
+.p-story-links { margin-top: 20px; gap: 14px 22px; }
+.p-story-links a { font-size: 12px; min-height: 30px; }
+@media (min-width: 1100px) {
+  .p-story-card:has(.p-story-detail[open]) { grid-column: 1 / -1; display: grid; grid-template-columns: .9fr 1.1fr; align-items: start; }
+  .p-story-card:has(.p-story-detail[open]) .p-story-visual { position: sticky; top: 24px; border: 0; }
+  .p-story-card:has(.p-story-detail[open]) .p-story-copy { border-left: 1px solid var(--p-line); }
+}
+@media (max-width: 950px) {
+  .p-header nav { gap: 15px; }
+  .p-story-routes { gap: 18px; }
+  .p-story-route { padding-right: 0; }
+  .p-route-meta { font-size: 9px; gap: 7px; }
+  .p-story-route h3 { font-size: 22px; }
+  .p-story-route p { font-size: 13px; }
+  .p-project-list { gap: 22px; }
+  .p-story-copy { padding: 23px; }
+  .p-story-card h3 { font-size: 27px; }
+}
+@media (max-width: 700px) {
+  .p-story-routes, .p-project-list { grid-template-columns: 1fr; }
+  .p-start { padding-block: 32px 38px; }
+  .p-story-route { padding-block: 19px; }
+  .p-story-route h3 { margin-block: 14px 9px; font-size: 25px; }
+  .p-route-meta { font-size: 11px; }
+  .p-story-route p { font-size: 14px; }
+  .p-work-tools { flex-direction: column; align-items: stretch; gap: 14px; }
+  .p-search { flex: auto; }
+  .p-filter-group button { min-height: 40px; font-size: 11px; }
+  .p-story-kicker { gap: 10px; }
+  .p-story-copy { padding: 22px; }
+  .p-short-story { padding: 18px; }
+  .p-short-story > p:last-child { font-size: 15px; }
+  .p-story-links { gap: 10px 18px; }
+}
+@media (max-width: 420px) {
+  .p-header { gap: 12px; }
+  .p-header nav { font-size: 11px; gap: 11px; }
+  .p-github { font-size: 10px; }
+  .p-github svg { display: none; }
+}
+@media print {
+  .p-header, .p-hero-art, .p-work-tools, .p-story-routes, .p-footer, .p-source-links { display: none; }
+  .p-project-list { display: block; }
+  .p-story-card { break-inside: avoid; margin-block: 24px; }
+  .p-story-visual { position: static !important; }
+}

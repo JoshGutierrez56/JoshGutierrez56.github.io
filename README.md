@@ -4,7 +4,11 @@ An interactive, evidence-linked portfolio: [joshgutierrez56.github.io](https://j
 
 ## What is here
 
-- A searchable, filterable project index with expandable research cases.
+- Six visual project stories with plain-English summaries and searchable, filterable navigation.
+- Three entry points for portfolio construction, research engineering, and empirical research.
+- Expandable 60-second walkthroughs: the problem, implementation, key decision, lesson, next test, and discussion questions.
+- Direct project links such as `/#project-customization`, with the relevant walkthrough opened automatically.
+- Source-based charts and focused product demonstrations, alongside the original project artwork and research figures.
 - A portfolio-construction comparison using three reviewed aggregate observations, with visible assumptions and limits.
 - An account-size control that scales modeled annual transaction costs only; it does not forecast returns or interpolate portfolio results.
 - Links to public research repositories and demonstrations. Synthetic projects and work in progress are labeled separately.
@@ -27,7 +31,7 @@ The production build type-checks, bundles with Vite, and prerenders the full pag
 
 ## Sources and methodology
 
-Research claims and project links are maintained in `src/content.ts`. The three-row comparison is documented in `public/assets/portfolio-case-study.md`, with the aggregate CSV and provenance record alongside it. No security-level licensed observations or private project data are included. Historical or modeled research outputs are not live execution results, client performance or investment advice. The scale control holds the modeled cost rate constant.
+Research claims and project links are maintained in `src/content.ts`; the plain-language narratives are in `src/stories.ts`. The three-row comparison is documented in `public/assets/portfolio-case-study.md`, with the aggregate CSV and provenance record alongside it. Visual provenance is recorded in `public/assets/projects/PROVENANCE.md`. No security-level licensed observations or private project data are included. Historical or modeled research outputs are not live execution results, client performance or investment advice. The scale control holds the modeled cost rate constant.
 
 The site was developed with AI assistance and Higgsfield's website tooling, then adapted into this portable static React implementation. The abstract editorial hero artwork was generated using Higgsfield; it is illustrative, not a chart or a representation of research results. The comparison chart is built from the reviewed aggregate research values, not generated artwork. Repository and case-study links are the evidence trail; AI assistance is not evidence of a claim.
 

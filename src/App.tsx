@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { categories, github, projects, scenarios, type Category } from "./content";
+import ProjectVisual from "./ProjectVisual";
+import { stories } from "./stories";
 
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
@@ -22,12 +24,34 @@ export default function App() {
   const [method, setMethod] = useState<(typeof scenarios)[number]["id"]>("turnover");
   const [account, setAccount] = useState(1000000);
   const [metric, setMetric] = useState<"te" | "turnover">("te");
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [scrollTarget, setScrollTarget] = useState<string | null>(null);
+  const showProject = (id: string) => {
+    setCategory("All work");
+    setQuery("");
+    setExpanded(id);
+    setScrollTarget(id);
+  };
+  useEffect(() => {
+    const followHash = () => {
+      const id = window.location.hash.replace("#project-", "");
+      if (projects.some((project) => project.id === id)) showProject(id);
+    };
+    followHash();
+    window.addEventListener("hashchange", followHash);
+    return () => window.removeEventListener("hashchange", followHash);
+  }, []);
+  useEffect(() => {
+    if (!scrollTarget) return;
+    document.getElementById(`project-${scrollTarget}`)?.scrollIntoView({ block: "start" });
+    setScrollTarget(null);
+  }, [scrollTarget]);
   const visible = useMemo(
     () =>
       projects.filter(
         (project) =>
           (category === "All work" || project.category === category) &&
-          [project.title, project.question, project.result, project.category, ...project.methods]
+          [project.title, project.question, project.result, project.category, stories[project.id].subtitle, ...project.methods]
             .join(" ")
             .toLowerCase()
             .includes(query.trim().toLowerCase()),
@@ -63,7 +87,8 @@ export default function App() {
           <span className="p-brand-name">Josh Gutierrez</span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#work">Work</a>
+          <a href="#work">Projects</a>
+          <a href="#start">Start here</a>
           <a href="#approach">Approach</a>
           <a href="#about">About</a>
         </nav>
@@ -84,15 +109,15 @@ export default function App() {
               <span>Clearer decisions.</span>
             </h1>
             <p className="p-hero-intro">
-              I explore how portfolios behave, what company disclosures really say, and where an
-              investment idea stops holding up.
+              My work connects investment questions to portfolio models, research tools, and
+              decisions you can inspect. Here is what I built, what I learned, and why it matters.
             </p>
             <div className="p-hero-actions">
-              <a className="p-button" href="#work">
-                Explore selected work <Arrow />
+              <a className="p-button" href="#start">
+                Find a project to explore <Arrow />
               </a>
               <a className="p-text-link" href="#tradeoffs">
-                Inside a portfolio decision <Arrow />
+                Try a portfolio decision <Arrow />
               </a>
             </div>
             <div className="p-hero-foot">
@@ -121,19 +146,40 @@ export default function App() {
           </figure>
         </section>
 
+        <section id="start" className="p-start p-shell" aria-labelledby="start-heading">
+          <div className="p-start-heading">
+            <p className="p-eyebrow">A quick way into the work</p>
+            <h2 id="start-heading">Start with a decision.</h2>
+            <p>Three projects. Three different ways of turning research into something useful.</p>
+          </div>
+          <div className="p-story-routes">
+            {[
+              { id: "customization", number: "01", area: "Portfolio construction", title: "What does a restriction cost?", text: "Compare three allocations, then see how an independent check challenges the results." },
+              { id: "pure-news", number: "02", area: "Research engineering", title: "What actually changed?", text: "Follow a disclosure change from its source to a research question worth investigating." },
+              { id: "news-research", number: "03", area: "Empirical research", title: "When should an idea stop?", text: "See how a null result redirected a forecasting study toward an analyst tool." },
+            ].map((route) => (
+              <a key={route.id} href={`#project-${route.id}`} className="p-story-route" onClick={() => showProject(route.id)}>
+                <span className="p-route-meta"><span>{route.number}</span>{route.area}<Arrow /></span>
+                <h3>{route.title}</h3>
+                <p>{route.text}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+
         <section id="work" className="p-work p-shell p-section" aria-labelledby="work-heading">
           <div className="p-section-heading">
             <div>
               <p className="p-eyebrow">01 / Selected work</p>
               <h2 id="work-heading">
-                Follow the question.
+                The question. The build.
                 <br />
-                <span>Inspect the evidence.</span>
+                <span>The lesson.</span>
               </h2>
             </div>
             <p>
-              Research studies, working prototypes, and interactive learning. Each makes its
-              evidence and its limits explicit.
+              Get the idea at a glance. Open a project for the short story, the key design
+              decision, and the evidence behind the result.
             </p>
           </div>
           <div className="p-work-tools">
@@ -175,58 +221,55 @@ export default function App() {
             )}
           </div>
           <div className="p-project-list">
-            {visible.map((project) => (
-              <article className="p-project" key={project.id}>
-                <div className="p-project-index">
-                  {project.number}
-                  <span>{project.category}</span>
-                </div>
-                <div className="p-project-main">
-                  <div className="p-project-top">
-                    <h3>{project.title}</h3>
-                    <span className="p-status">{project.status}</span>
-                  </div>
-                  <p className="p-question">{project.question}</p>
-                  <div className="p-evidence">
-                    <div>
-                      <span className="p-label">What the work shows</span>
-                      <p>{project.result}</p>
-                    </div>
-                    <div>
-                      <span className="p-label">Where the claim stops</span>
-                      <p>{project.limitation}</p>
-                    </div>
-                  </div>
-                  <details className="p-detail">
-                    <summary>
-                      Inside the project <span aria-hidden="true">+</span>
-                    </summary>
-                    <div className="p-detail-body">
-                      <p>{project.contribution}</p>
-                      <ul className="p-tags" aria-label="Methods">
-                        {project.methods.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                      <div className="p-source-links">
-                        {project.links.map((link) => (
-                          <a
-                            key={link.href}
-                            href={link.href}
-                            download={link.download || undefined}
-                            target={link.href.startsWith("https") ? "_blank" : undefined}
-                            rel={link.href.startsWith("https") ? "noreferrer" : undefined}
-                          >
-                            {link.label}
-                            <Arrow diagonal={link.href.startsWith("https")} />
-                          </a>
-                        ))}
+            {visible.map((project) => {
+              const story = stories[project.id];
+              return (
+                <article className="p-story-card" id={`project-${project.id}`} key={project.id} aria-labelledby={`title-${project.id}`}>
+                  <div className="p-story-visual"><ProjectVisual id={project.id} /></div>
+                  <div className="p-story-copy">
+                    <div className="p-story-kicker"><span>{project.number} / {project.category}</span><span className="p-status">{project.status}</span></div>
+                    <h3 id={`title-${project.id}`}>{project.title}</h3>
+                    <p className="p-story-subtitle">{story.subtitle}</p>
+                    <div className="p-story-takeaway"><span className="p-label">The takeaway</span><p>{story.takeaway}</p></div>
+                    <p className="p-story-scope">{story.evidenceNote}</p>
+                    <details className="p-story-detail" open={expanded === project.id}>
+                      <summary onClick={(event) => {
+                        event.preventDefault();
+                        const opening = expanded !== project.id;
+                        setExpanded(opening ? project.id : null);
+                        if (opening) setScrollTarget(project.id);
+                      }}>
+                        <span>{expanded === project.id ? "Close the walkthrough" : "Walk through the project"}</span><span aria-hidden="true">{expanded === project.id ? "−" : "+"}</span>
+                      </summary>
+                      <div className="p-story-expanded">
+                        <div className="p-short-story"><p className="p-eyebrow">The 60-second story</p><p>{story.walkthrough}</p></div>
+                        <ol className="p-story-workflow" aria-label="How the project works">
+                          {story.steps.map((step, index) => <li key={step.label}><span className="p-step-number">0{index + 1}</span><div><h4>{step.label}</h4><p>{step.description}</p></div></li>)}
+                        </ol>
+                        <div className="p-story-chapters">
+                          <section><h4>The problem</h4><p>{story.context}</p></section>
+                          <section><h4>What I built</h4><p>{story.approach}</p></section>
+                          <section><h4>The key decision</h4><p>{story.decision}</p></section>
+                          <section><h4>What I learned</h4><p>{story.learning}</p></section>
+                        </div>
+                        <div className="p-story-next"><h4>What I would test next</h4><p>{story.nextStep}</p></div>
+                        <div className="p-discussion"><h4>Go one level deeper</h4><ul>{story.discussion.map((item) => <li key={item}>{item}</li>)}</ul></div>
+                        <details className="p-story-evidence">
+                          <summary>Results, methods &amp; boundaries <span aria-hidden="true">+</span></summary>
+                          <div><p><strong>Result.</strong> {project.result}</p><p><strong>Scope.</strong> {project.limitation}</p><p><strong>Implementation.</strong> {project.contribution}</p>
+                            <ul className="p-tags" aria-label="Methods">{project.methods.map((item) => <li key={item}>{item}</li>)}</ul>
+                          </div>
+                        </details>
+                        <a className="p-project-permalink" href={`#project-${project.id}`}>Link to this project <Arrow /></a>
                       </div>
+                    </details>
+                    <div className="p-source-links p-story-links">
+                      {project.links.map((link) => <a key={link.href} href={link.href} download={link.download || undefined} target={link.href.startsWith("https") ? "_blank" : undefined} rel={link.href.startsWith("https") ? "noreferrer" : undefined}>{link.label}<Arrow diagonal={link.href.startsWith("https")} /></a>)}
                     </div>
-                  </details>
-                </div>
-              </article>
-            ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
           {visible.length === 0 && (
             <div className="p-empty">

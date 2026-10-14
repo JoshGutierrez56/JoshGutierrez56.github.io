@@ -33,11 +33,13 @@ export const projects: Project[] = [
     contribution:
       "Compared three allocation methods across ten account scenarios in a 2014 to 2025 walk-forward simulation, using actual CRSP returns, lagged risk estimates, drifting holdings, and account-funded trading costs.",
     result:
-      "Minimum-risk allocation reduced realized tracking error by a median 35.5% across nine constrained scenarios versus bounded proportional allocation.",
+      "Minimum-risk allocation reduced realized net tracking error by a median 35.5% across nine constrained scenarios versus bounded proportional allocation.",
     limitation:
       "A retrospective, fixed eight-ETF study with current-vintage data and assumed costs. Not live client outcomes, tax-aware advice, or evidence of alpha.",
     methods: ["WRDS / CRSP", "CVXPY", "Ledoit-Wolf", "Walk-forward evaluation"],
     links: [
+      { label: "Open the oversight lab", href: "https://joshgutierrez56.github.io/personalized-model-portfolios/" },
+      { label: "View research & code", href: "https://github.com/JoshGutierrez56/personalized-model-portfolios" },
       { label: "Explore the scenario", href: "#tradeoffs" },
       { label: "Read the case study", href: "/assets/portfolio-case-study.md", download: true },
       { label: "Download aggregate data", href: "/assets/no-gold-summary.csv", download: true },
