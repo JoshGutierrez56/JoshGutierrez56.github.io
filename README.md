@@ -4,8 +4,9 @@ An interactive, evidence-linked portfolio: [joshgutierrez56.github.io](https://j
 
 ## What is here
 
-- Six visual project stories with plain-English summaries and searchable, filterable navigation.
+- Nine visual project stories with plain-English summaries and searchable, filterable navigation.
 - Three entry points for portfolio construction, research engineering, and empirical research.
+- Additional direct routes into liquidity forecasting, real-estate risk measurement, and debt-covenant simulation.
 - Expandable 60-second walkthroughs: the problem, implementation, key decision, lesson, next test, and discussion questions.
 - Direct project links such as `/#project-customization`, with the relevant walkthrough opened automatically.
 - Source-based charts and focused product demonstrations, alongside the original project artwork and research figures.

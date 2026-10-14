@@ -165,6 +165,16 @@ export default function App() {
               </a>
             ))}
           </div>
+          <div className="p-new-research" aria-label="New research to explore">
+            <p className="p-eyebrow">More investment questions to explore</p>
+            <div className="p-new-research-links">
+              {[
+                { id: "liquidity", area: "Quantitative research", title: "Does complexity earn its place?" },
+                { id: "real-estate-risk", area: "Real-estate allocation", title: "How much risk is hidden?" },
+                { id: "covenant-risk", area: "Credit & underwriting", title: "Will the loan pass along the way?" },
+              ].map((route) => <a key={route.id} href={`#project-${route.id}`} onClick={() => showProject(route.id)}><span>{route.area}</span><strong>{route.title}</strong><Arrow /></a>)}
+            </div>
+          </div>
         </section>
 
         <section id="work" className="p-work p-shell p-section" aria-labelledby="work-heading">
@@ -274,7 +284,7 @@ export default function App() {
           {visible.length === 0 && (
             <div className="p-empty">
               <h3>No projects match this combination.</h3>
-              <p>Try a broader search, or return to all six projects.</p>
+              <p>Try a broader search, or return to all {projects.length} projects.</p>
               <button className="p-button" type="button" onClick={reset}>
                 Show all work <Arrow />
               </button>
@@ -631,9 +641,10 @@ export default function App() {
           <aside className="p-in-progress">
             <span className="p-status">Research in progress</span>
             <p>
-              <strong>Earnings reactions &amp; liquidity forecasting.</strong> Current work is
-              focused on source audits, point-in-time data construction, and reproducible evaluation
-              design. No empirical forecasting-performance claim is made.
+              <strong>Earnings reactions &amp; execution research.</strong> Earnings work remains
+              focused on source audits and evaluation design. The liquidity forecast comparison
+              above is complete within its historical sample; whether it improves execution costs
+              remains an open research question.
             </p>
           </aside>
         </section>

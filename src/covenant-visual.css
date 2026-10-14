@@ -1,0 +1,31 @@
+.cv-years { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin-bottom: 14px; }
+.cv-years button { min-height: 42px; padding: 7px 2px; border: 1px solid var(--pv-line); border-radius: 5px; background: #fff; color: var(--pv-ink); font: inherit; font-size: 12px; font-weight: 500; cursor: pointer; }
+.cv-years button[aria-pressed="true"] { border-color: var(--pv-blue); box-shadow: inset 0 0 0 1px var(--pv-blue); background: #e2ebf9; color: #244f9d; }
+.cv-years button:focus-visible, .pv-covenant-risk a:focus-visible { outline: 3px solid var(--pv-blue); outline-offset: 3px; }
+.cv-chart { margin-bottom: 13px; }
+.cv-axis { font-size: 20px; fill: var(--pv-muted) !important; font-variant-numeric: tabular-nums; }
+.cv-axis-title { font-size: 19px; fill: var(--pv-muted) !important; }
+.cv-curve { fill: none; stroke: var(--pv-blue); stroke-width: 4; stroke-linejoin: round; }
+.cv-year-point { fill: var(--pv-blue); }
+.cv-selection { stroke: var(--pv-muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.cv-ring { fill: none; stroke: var(--pv-blue); stroke-width: 2; }
+.cv-readout { display: grid; grid-template-columns: 1.1fr 1fr; border: 1px solid var(--pv-line); background: #fff; border-radius: 7px; overflow: hidden; }
+.cv-probability { display: grid; gap: 1px; padding: 12px 15px; }
+.cv-probability > strong { font-family: "Outfit", sans-serif; color: #244f9d; font-size: 39px; font-weight: 500; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.cv-probability > strong > span { font-size: 25px; }
+.cv-probability > p { font-size: 12px; line-height: 1.45; color: var(--pv-muted); margin: 3px 0 0; }
+.cv-floors { border-left: 1px solid var(--pv-line); padding: 15px 14px; display: flex; flex-direction: column; justify-content: center; }
+.cv-floors > span { color: var(--pv-muted); font-size: 11px; }
+.cv-floors > p { font-size: 13px; line-height: 1.75; margin: 5px 0 0; font-variant-numeric: tabular-nums; }
+.cv-explanation { font-size: 12px; line-height: 1.5; color: var(--pv-muted); margin: 12px 0 0; }
+.pv-covenant-risk .pv-caption a { color: var(--pv-blue); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 480px) {
+  .cv-years { gap: 4px; }
+  .cv-years button { font-size: 11px; }
+  .cv-probability { padding: 12px 10px; }
+  .cv-probability > strong { font-size: 34px; }
+  .cv-probability > p { font-size: 11px; }
+  .cv-floors { padding: 12px 9px; }
+  .cv-floors > p { font-size: 11px; }
+  .cv-floors > span { font-size: 10px; }
+}

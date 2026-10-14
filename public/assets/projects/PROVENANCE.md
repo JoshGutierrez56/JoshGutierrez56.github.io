@@ -26,6 +26,20 @@ The original six-project artwork and five-slide research brief were finalized Oc
 
 The original captured product screens remain available through their reference links.
 
+## Additional project exhibits — October 14 expansion
+
+- **Liquidity forecasting:** `liquidity.png` preserves the original eight-model comparison. The interactive exhibit redraws four key methods with readable labels and a fixed mean-squared-error scale; the full eight-method table remains available. The period toggle selects saved validation or previously exposed historical results, not a new forecast. [Method, chronology, and limitations](liquidity-evidence.md) · [16 aggregate comparison rows](liquidity-model-comparison.csv). No security-level licensed observations are published.
+- **Real-estate risk measurement:** `real-estate-risk.png` preserves the original synthetic unsmoothing figure. The new plot reproduces its seeded series, fixes the labels and mixed-unit presentation, distinguishes observed from model-adjusted returns, and shows both on one fixed scale. [Method and boundaries](real-estate-method.md) · [Synthetic series](real-estate-series.csv) · [Minimal replay](real-estate-replay.py). This is a full-sample synthetic measurement illustration, not a real-estate performance result.
+- **Debt-covenant simulation:** `covenant-risk.png` preserves the original seeded-run chart. The interactive redraw selects a year in the same 200,000-path result, displaying cumulative breaches and the applicable quarter-end covenant floors. [Assumptions and interpretation](covenant-risk-method.md) · [20 quarterly aggregate observations](covenant-risk.csv). Covenant breach is distinct from default; no property records or private loan documents are published.
+
+Original chart SHA-256 values:
+
+```text
+liquidity.png          b7567b0183499068fe4b9388ebd12127942aa382a9f6c9ee189812573671f6df
+real-estate-risk.png   55d4c5cf8656a82c0c9049c7a8cee4809316adbf291e886e9e9bf7d0dc94521b
+covenant-risk.png      4ffccfd66cb26caa104850442bb08b40b9699b7377944bd006ae721aa7b5168f
+```
+
 ## SHA-256
 
 ```text

@@ -1,3 +1,7 @@
+import { story as liquidityStory } from "./liquidityProject";
+import { story as covenantStory } from "./covenantProject";
+import { realEstateStory } from "./realEstateProject";
+
 export type ProjectStory = {
   subtitle: string;
   takeaway: string;
@@ -16,6 +20,9 @@ export type ProjectStory = {
 // Future work is proposed, not represented as completed or underway. Walkthroughs
 // describe the projects without claiming independent, unaided implementation.
 export const stories: Record<string, ProjectStory> = {
+  liquidity: liquidityStory,
+  "covenant-risk": covenantStory,
+  "real-estate-risk": realEstateStory,
   customization: {
     subtitle: "Keep a restricted portfolio close to its original plan.",
     takeaway:

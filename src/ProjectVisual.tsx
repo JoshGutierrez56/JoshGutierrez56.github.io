@@ -2,6 +2,9 @@ import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import { scenarios } from "./content";
 import { ProductPreview } from "./ProductPreview";
+import LiquidityVisual from "./LiquidityVisual";
+import CovenantVisual from "./CovenantVisual";
+import RealEstateVisual from "./RealEstateVisual";
 
 // Original assets remain available beside these source-based improvements.
 // Exact input data and derivation notes: public/assets/projects/PROVENANCE.md.
@@ -118,6 +121,9 @@ function CorporateNiche() {
 export default function ProjectVisual({ id }: { id: string }) {
   if (id === "pure-news" || id === "trading-floor") return <Frame id={id} label={id === "pure-news" ? "From source to research question" : "Practice, explain, replay"} caption={id === "pure-news" ? "A sourced example from the original disclosure-review workflow." : "Explore the original simulator's European-call example, one expiry price at a time."}><ProductPreview id={id} /></Frame>;
   switch (id) {
+    case "liquidity": return <LiquidityVisual />;
+    case "covenant-risk": return <CovenantVisual />;
+    case "real-estate-risk": return <RealEstateVisual />;
     case "customization": return <Customization />;
     case "news-research": return <NewsResearch />;
     case "black-litterman": return <BlackLitterman />;

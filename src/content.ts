@@ -1,7 +1,12 @@
+import { project as liquidityProject } from "./liquidityProject";
+import { project as covenantProject } from "./covenantProject";
+import { realEstateProject } from "./realEstateProject";
+
 export const categories = [
   "All work",
   "Portfolio construction",
   "Empirical research",
+  "Risk & underwriting",
   "Research tools",
   "Interactive learning",
 ] as const;
@@ -166,6 +171,9 @@ export const projects: Project[] = [
       },
     ],
   },
+  liquidityProject,
+  realEstateProject,
+  covenantProject,
 ];
 
 export const scenarios = [

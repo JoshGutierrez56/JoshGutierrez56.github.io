@@ -1190,6 +1190,13 @@
 .p-route-meta svg { margin-left: auto; }
 .p-story-route h3 { font-size: 25px; margin: 22px 0 13px; }
 .p-story-route p { font-size: 14px; line-height: 1.75; color: var(--p-muted); }
+.p-new-research { margin-top: 30px; padding-top: 23px; border-top: 1px solid var(--p-line); }
+.p-new-research-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 25px; margin-top: 15px; }
+.p-new-research-links a { display: grid; grid-template-columns: 1fr auto; gap: 7px 10px; padding: 12px 12px 12px 0; min-width: 0; }
+.p-new-research-links a:hover { background: #eaf0f9; }
+.p-new-research-links span { grid-column: 1 / -1; font: 10px var(--p-mono); color: var(--p-muted); }
+.p-new-research-links strong { font: 500 17px/1.4 "Outfit", sans-serif; }
+.p-new-research-links svg { color: var(--p-blue); align-self: center; }
 .p-project-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start; }
 .p-story-card { min-width: 0; background: #fff; border: 1px solid var(--p-line); scroll-margin-top: 26px; }
 .p-story-visual { min-width: 0; background: #edf2fa; border-bottom: 1px solid var(--p-line); }
@@ -1243,6 +1250,8 @@
   .p-story-card h3 { font-size: 27px; }
 }
 @media (max-width: 700px) {
+  .p-new-research-links { grid-template-columns: 1fr; gap: 8px; }
+  .p-new-research-links a { border-bottom: 1px solid var(--p-line); padding: 12px 0; }
   .p-story-routes, .p-project-list { grid-template-columns: 1fr; }
   .p-start { padding-block: 32px 38px; }
   .p-story-route { padding-block: 19px; }
