@@ -10,6 +10,7 @@ export const featuredSelection = [
 ] as const;
 
 export const moreProjectIds = [
+  "optlab", "risk-parity", "macro-hmm",
   "deep-momentum", "news-research", "housing-forest", "real-estate-risk",
   "covenant-risk", "corporate-niche", "trading-floor",
 ];

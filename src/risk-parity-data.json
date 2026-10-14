@@ -1,0 +1,249 @@
+{
+  "date": "2024-06-26",
+  "mode": "synthetic",
+  "seed": 42,
+  "source": "Risk-Parity-Model data/risk_parity.duckdb risk_contribution_diagnostic",
+  "run": "--synthetic --start 2023-01-01 --end 2024-06-30 --scorecard",
+  "rows": [
+    {
+      "ticker": "DBC",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": 0.0
+    },
+    {
+      "ticker": "EEM",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": 0.0
+    },
+    {
+      "ticker": "EFA",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": 0.0
+    },
+    {
+      "ticker": "EMB",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": -0.0
+    },
+    {
+      "ticker": "GLD",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": 0.0
+    },
+    {
+      "ticker": "SHY",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": -0.0
+    },
+    {
+      "ticker": "SPY",
+      "strategy": "60_40",
+      "weight": 0.6,
+      "risk_share": 1.0006754454942193
+    },
+    {
+      "ticker": "TIP",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": -0.0
+    },
+    {
+      "ticker": "TLT",
+      "strategy": "60_40",
+      "weight": 0.4,
+      "risk_share": -0.0006754454942193373
+    },
+    {
+      "ticker": "VNQ",
+      "strategy": "60_40",
+      "weight": 0.0,
+      "risk_share": 0.0
+    },
+    {
+      "ticker": "DBC",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.21111108451234353
+    },
+    {
+      "ticker": "EEM",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.16819096012061385
+    },
+    {
+      "ticker": "EFA",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.19199020252612384
+    },
+    {
+      "ticker": "EMB",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": -0.0063209534162126085
+    },
+    {
+      "ticker": "GLD",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.17664598707294937
+    },
+    {
+      "ticker": "SHY",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": -0.009704465868672246
+    },
+    {
+      "ticker": "SPY",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.1303854481767083
+    },
+    {
+      "ticker": "TIP",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": -0.006930772010811592
+    },
+    {
+      "ticker": "TLT",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": -0.003841455795753451
+    },
+    {
+      "ticker": "VNQ",
+      "strategy": "equal_weight",
+      "weight": 0.1,
+      "risk_share": 0.148473964682711
+    },
+    {
+      "ticker": "DBC",
+      "strategy": "inv_vol",
+      "weight": 0.03695291941523603,
+      "risk_share": 0.0625033632494161
+    },
+    {
+      "ticker": "EEM",
+      "strategy": "inv_vol",
+      "weight": 0.05634531797451531,
+      "risk_share": 0.12720853803480792
+    },
+    {
+      "ticker": "EFA",
+      "strategy": "inv_vol",
+      "weight": 0.05231675299049966,
+      "risk_share": 0.13992820325701927
+    },
+    {
+      "ticker": "EMB",
+      "strategy": "inv_vol",
+      "weight": 0.16613115370566855,
+      "risk_share": 0.09265967604145268
+    },
+    {
+      "ticker": "GLD",
+      "strategy": "inv_vol",
+      "weight": 0.04362318678459922,
+      "risk_share": 0.06557365490001471
+    },
+    {
+      "ticker": "SHY",
+      "strategy": "inv_vol",
+      "weight": 0.17504515280807947,
+      "risk_share": 0.08456017011251654
+    },
+    {
+      "ticker": "SPY",
+      "strategy": "inv_vol",
+      "weight": 0.062198541491118024,
+      "risk_share": 0.10479324281169905
+    },
+    {
+      "ticker": "TIP",
+      "strategy": "inv_vol",
+      "weight": 0.16354232007677008,
+      "risk_share": 0.09712010156225392
+    },
+    {
+      "ticker": "TLT",
+      "strategy": "inv_vol",
+      "weight": 0.19073276469599174,
+      "risk_share": 0.10004645828079294
+    },
+    {
+      "ticker": "VNQ",
+      "strategy": "inv_vol",
+      "weight": 0.05311189005752179,
+      "risk_share": 0.12560659175002695
+    },
+    {
+      "ticker": "DBC",
+      "strategy": "risk_parity",
+      "weight": 0.04554550757498237,
+      "risk_share": 0.09999886002919094
+    },
+    {
+      "ticker": "EEM",
+      "strategy": "risk_parity",
+      "weight": 0.04786600246128361,
+      "risk_share": 0.09999978376159045
+    },
+    {
+      "ticker": "EFA",
+      "strategy": "risk_parity",
+      "weight": 0.04011512563622334,
+      "risk_share": 0.0999993411670361
+    },
+    {
+      "ticker": "EMB",
+      "strategy": "risk_parity",
+      "weight": 0.17013389208666055,
+      "risk_share": 0.10000100157359418
+    },
+    {
+      "ticker": "GLD",
+      "strategy": "risk_parity",
+      "weight": 0.05178552277186681,
+      "risk_share": 0.09999937203386866
+    },
+    {
+      "ticker": "SHY",
+      "strategy": "risk_parity",
+      "weight": 0.1858646507434831,
+      "risk_share": 0.09999996333919062
+    },
+    {
+      "ticker": "SPY",
+      "strategy": "risk_parity",
+      "weight": 0.06384059385448076,
+      "risk_share": 0.10000039642052375
+    },
+    {
+      "ticker": "TIP",
+      "strategy": "risk_parity",
+      "weight": 0.1610104756259259,
+      "risk_share": 0.1000001089201902
+    },
+    {
+      "ticker": "TLT",
+      "strategy": "risk_parity",
+      "weight": 0.18683252536873396,
+      "risk_share": 0.100001825639535
+    },
+    {
+      "ticker": "VNQ",
+      "strategy": "risk_parity",
+      "weight": 0.047005703876359516,
+      "risk_share": 0.09999934711528012
+    }
+  ]
+}

@@ -187,7 +187,7 @@ export default function App() {
             ))}
           </nav>
           <div className="p-collection-links">
-            <a href="#more-projects" onClick={reset}>Browse seven more projects <Arrow /></a>
+            <a href="#more-projects" onClick={reset}>Browse {moreProjects.length} more projects <Arrow /></a>
             <a href="#project-deep-momentum">Explore the trained LSTM <Arrow /></a>
           </div>
           <div className="p-work-tools">
@@ -205,7 +205,7 @@ export default function App() {
                 <path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.5" />
               </svg>
               <span className="p-sr-only">Search projects</span>
-              <input type="search" placeholder="Search all 12 projects..." value={query}
+              <input type="search" placeholder={`Search all ${projects.length} projects...`} value={query}
                 onChange={(event) => setQuery(event.target.value)} />
             </label>
           </div>

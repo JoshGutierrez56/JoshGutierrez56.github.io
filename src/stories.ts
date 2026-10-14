@@ -4,6 +4,7 @@ import { realEstateStory } from "./realEstateProject";
 import { story as deepMomentumStory } from "./deepMomentumProject";
 import { story as sentimentStory } from "./sentimentProject";
 import { story as housingForestStory } from "./housingForestProject";
+import { quantLibraryStories } from "./quantLibraryProjects";
 
 export type ProjectStory = {
   subtitle: string;
@@ -23,6 +24,7 @@ export type ProjectStory = {
 // Future work is proposed, not represented as completed or underway. Walkthroughs
 // describe the projects without claiming independent, unaided implementation.
 export const stories: Record<string, ProjectStory> = {
+  ...quantLibraryStories,
   "deep-momentum": deepMomentumStory,
   "sentiment-lab": sentimentStory,
   "housing-forest": housingForestStory,

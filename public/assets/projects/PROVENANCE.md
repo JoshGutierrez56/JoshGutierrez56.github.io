@@ -48,6 +48,14 @@ covenant-risk.png      4ffccfd66cb26caa104850442bb08b40b9699b7377944bd006ae721aa
 
 These are three distinct evidence categories: trained-network synthetic diagnostics, pretrained-model applied research, and historical tabular-ML evaluation. They do not establish profitable trading, production model ownership, or generalized deep-learning mastery.
 
+## Research library additions — October 14
+
+- **Optlab:** `optlab.png` preserves the public repository's archived `notebooks/examples/cross_section_correlations.png`. The interactive view redraws four pairs at the original chart's two-decimal precision: book-to-market/gross profitability −0.52; momentum_12_2/short_term_reversal +0.14; short_term_reversal/beta_60m +0.56; size/beta_60m −0.22. These are saved `liquid_500` signal-rank relationships from 2023-12-29, not a rerun, information coefficients, or return forecasts. The original notebook calculates Pearson correlation of its saved signal-rank columns; pairwise missingness can make this differ from recomputing Spearman ranks within each pair. No underlying licensed security-level observations are added.
+- **Risk Parity:** `risk-parity.png` preserves the repository's explicitly synthetic risk-contribution chart. `risk-parity-data.json` contains all 40 aggregate strategy/asset rows from `risk_contribution_diagnostic` at 2024-06-26 after `--synthetic --start 2023-01-01 --end 2024-06-30 --scorecard`, seed 42, commit `dafce31fc393848c1643af79dc0f5c5960aa6a19`. The interactive view compares ERC, inverse volatility and equal capital weights at this one covariance snapshot. The fourth 60/40 comparator remains in the downloadable data. Capital and variance contributions are separate measures; neither establishes future realized risk.
+- **Macro HMM:** `macro-hmm.png` is the full-sample smoothed-probability figure from the repaired public implementation, commit `c6b3a67cb863330dc401ef6408ed2d67f6e5d244`, using `--offline --start 2000-01-01 --end 2024-12-01`. `macro-hmm-data.json` preserves all 300 synthetic full-sample Viterbi states and the 240 filtered states after the 60-month warm-up, plus the input checksum and source revision. The new exhibit compares the two paths year by year; it does not equate the smoothed probability artwork with Viterbi states. Differences may reflect future information, estimation windows and changing state boundaries. No recession-prediction or investment-performance claim is made.
+
+The three exhibits preserve source charts as inspectable references while improving labels, comparisons and interactions. Repository tests are software evidence, not independent human validation.
+
 ## Original artwork hashes
 
 ```text
