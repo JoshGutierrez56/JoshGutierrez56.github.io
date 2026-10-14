@@ -5,6 +5,7 @@ import { story as deepMomentumStory } from "./deepMomentumProject";
 import { story as sentimentStory } from "./sentimentProject";
 import { story as housingForestStory } from "./housingForestProject";
 import { quantLibraryStories } from "./quantLibraryProjects";
+import { story as garchStory } from "./garchProject";
 
 export type ProjectStory = {
   subtitle: string;
@@ -25,6 +26,7 @@ export type ProjectStory = {
 // describe the projects without claiming independent, unaided implementation.
 export const stories: Record<string, ProjectStory> = {
   ...quantLibraryStories,
+  "garch-volatility": garchStory,
   "deep-momentum": deepMomentumStory,
   "sentiment-lab": sentimentStory,
   "housing-forest": housingForestStory,

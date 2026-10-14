@@ -7,11 +7,12 @@ export const featuredSelection = [
   { id: "sentiment-lab", label: "Sentiment Lab", area: "Applied NLP & model evaluation" },
   { id: "liquidity", label: "Liquidity forecasting", area: "Empirical research & baselines" },
   { id: "black-litterman", label: "Black–Litterman", area: "Analyst views & allocation" },
+  { id: "optlab", label: "Optlab Research", area: "Data-to-portfolio engineering" },
 ] as const;
 
 export const moreProjectIds = [
-  "optlab", "news-research", "macro-hmm", "risk-parity", "housing-forest",
-  "covenant-risk", "corporate-niche", "deep-momentum", "trading-floor", "real-estate-risk",
+  "news-research", "macro-hmm", "risk-parity", "housing-forest", "covenant-risk",
+  "corporate-niche", "garch-volatility", "deep-momentum", "trading-floor", "real-estate-risk",
 ];
 
 const findProject = (id: string) => {

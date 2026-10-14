@@ -5,6 +5,7 @@ import { project as deepMomentumProject } from "./deepMomentumProject";
 import { project as sentimentProject } from "./sentimentProject";
 import { project as housingForestProject } from "./housingForestProject";
 import { quantLibraryProjects } from "./quantLibraryProjects";
+import { project as garchProject } from "./garchProject";
 
 export const categories = [
   "All work",
@@ -184,6 +185,7 @@ export const projects: Project[] = [
   sentimentProject,
   housingForestProject,
   ...quantLibraryProjects,
+  garchProject,
 ];
 
 export const scenarios = [

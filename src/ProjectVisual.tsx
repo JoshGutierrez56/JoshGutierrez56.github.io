@@ -123,7 +123,7 @@ function CorporateNiche() {
 }
 
 export default function ProjectVisual({ id }: { id: string }) {
-  if (id === "optlab" || id === "risk-parity" || id === "macro-hmm") return <QuantLibraryVisual id={id} />;
+  if (id === "optlab" || id === "risk-parity" || id === "macro-hmm" || id === "garch-volatility") return <QuantLibraryVisual id={id} />;
   if (id === "pure-news" || id === "trading-floor") return <Frame id={id} label={id === "pure-news" ? "From source to research question" : "Practice, explain, replay"} caption={id === "pure-news" ? "A sourced example from the original disclosure-review workflow." : "Explore the original simulator's European-call example, one expiry price at a time."}><ProductPreview id={id} /></Frame>;
   switch (id) {
     case "deep-momentum": return <DeepMomentumVisual />;

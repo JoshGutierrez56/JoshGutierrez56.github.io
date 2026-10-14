@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import riskData from "./risk-parity-data.json";
 import hmmData from "./macro-hmm-data.json";
+import garchData from "./garch-data.json";
 
 function Frame({ id, label, caption, children }: { id: string; label: string; caption: string; children: ReactNode }) {
   return <figure className={`project-visual qv-${id}`}>
@@ -108,6 +109,34 @@ function MacroHMM() {
   </Frame>;
 }
 
-export default function QuantLibraryVisual({ id }: { id: "optlab" | "risk-parity" | "macro-hmm" }) {
-  return id === "optlab" ? <Optlab /> : id === "risk-parity" ? <RiskParity /> : <MacroHMM />;
+function GarchVolatility() {
+  const [shock, setShock] = useState(-2);
+  const uid = useId();
+  const row = garchData.rows.find(item => item.shock_pct === shock) ?? garchData.rows[12];
+  const x = (value: number) => 52 + (value + 5) / 10 * 450;
+  const y = (value: number) => 222 - (value - 15) / 25 * 180;
+  return <Frame id="garch-volatility" label="A model assumption you can inspect" caption="Adapted from the project’s original news-impact equations · Illustrative parameters · Prior annualized volatility 20%, 252 sessions per year.">
+    <div className="pv-visual-heading"><strong>Same-sized shock. Different risk response.</strong><span>Move between a gain and an equal-sized loss.</span></div>
+    <label className="qv-control" htmlFor={`${uid}-shock`}>Return innovation <output>{shock > 0 ? "+" : ""}{shock.toFixed(2)}%</output>
+      <input id={`${uid}-shock`} aria-label="Return innovation" type="range" min="-5" max="5" step="0.25" value={shock} aria-valuetext={`${shock.toFixed(2)} percent`} onChange={event => setShock(Number(event.target.value))} />
+    </label>
+    <svg viewBox="0 0 550 275" role="img" aria-labelledby={`${uid}-title ${uid}-desc`}>
+      <title id={`${uid}-title`}>{`Next-session annualized volatility after a ${shock}% innovation`}</title>
+      <desc id={`${uid}-desc`}>{`GARCH ${row.garch_vol_pct.toFixed(2)} percent; GJR ${row.gjr_vol_pct.toFixed(2)} percent. Both curves use illustrative parameters. The horizontal reference is prior annualized volatility of 20 percent, not a risk limit.`}</desc>
+      {[15,20,25,30,35,40].map(value => <g key={value}><line x1="52" x2="502" y1={y(value)} y2={y(value)} className="pv-grid" strokeDasharray={value===20?"5 4":undefined} /><text x="42" y={y(value)+4} textAnchor="end" className="pv-axis">{value}%</text></g>)}
+      <line x1={x(0)} x2={x(0)} y1="42" y2="222" className="qv-zero" />
+      {([-5,0,5]).map(value => <text key={value} x={x(value)} y="248" textAnchor={value < 0 ? "start" : value > 0 ? "end" : "middle"} className="pv-axis">{value > 0 ? "+" : ""}{value}% shock</text>)}
+      <polyline points={garchData.rows.map(item => `${x(item.shock_pct)},${y(item.garch_vol_pct)}`).join(" ")} fill="none" stroke="#275b97" strokeWidth="3" />
+      <polyline points={garchData.rows.map(item => `${x(item.shock_pct)},${y(item.gjr_vol_pct)}`).join(" ")} fill="none" stroke="#a34b37" strokeWidth="3" strokeDasharray="7 3" />
+      <line x1={x(shock)} x2={x(shock)} y1="42" y2="222" stroke="#788597" strokeDasharray="2 4" />
+      <circle cx={x(shock)} cy={y(row.garch_vol_pct)} r="5" fill="#275b97" />
+      <circle cx={x(shock)} cy={y(row.gjr_vol_pct)} r="5" fill="#a34b37" />
+    </svg>
+    <div className="qv-vol-readout" aria-live="polite" aria-atomic="true"><div><span>GARCH · solid blue</span><strong>{row.garch_vol_pct.toFixed(2)}%</strong><small>Symmetric response</small></div><div><span>GJR · dashed red</span><strong>{row.gjr_vol_pct.toFixed(2)}%</strong><small>Sign-sensitive response</small></div></div>
+    <p className="qv-boundary">Annualized conditional volatility, not a predicted loss. These fixed parameters illustrate the mechanism; they do not establish forecast accuracy.</p>
+  </Frame>;
+}
+
+export default function QuantLibraryVisual({ id }: { id: "optlab" | "risk-parity" | "macro-hmm" | "garch-volatility" }) {
+  return id === "optlab" ? <Optlab /> : id === "risk-parity" ? <RiskParity /> : id === "macro-hmm" ? <MacroHMM /> : <GarchVolatility />;
 }

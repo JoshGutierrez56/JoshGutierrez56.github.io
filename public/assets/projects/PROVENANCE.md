@@ -67,3 +67,12 @@ corporate-niche.png      2e8eb4728fb2de3568bb7cba07803923cd1d249fb5a49f90a9d242a
 corporate-niche-cover.png 4ef19228f04bf4be7489d2c08f36b41a7a764e0a2c98a2bca797b53366554474
 trading-floor.png        231b3330302f350c233d8554afb13d50c58099dd2e4121e085901e7d468a63ca
 ```
+
+
+## Six-featured update and broader research sections — October 14
+
+Optlab is promoted into the six featured projects. Ten additional projects remain, with the GARCH news-impact exhibit added. Sections 2–4 reuse existing evidence and do not create new empirical outcomes.
+
+- **GARCH:** `garch-volatility.png` is a fresh rendering of the original `Garch-Volatility-Model` archive's `src/garch/charts.py::fig2_news_impact` equations, using explicitly illustrative GARCH/GJR parameters. It is not an archived fitted-market chart. The standalone source script and parameter methodology are published in that repository. `garch-data.json` contains all 41 shock scenarios; four independent hand-arithmetic checks validate the two equations at ±2%. The website redraws these values with a keyboard-operable shock control. No legacy forecast ranking is promoted as validated evidence.
+- **Research in action:** the four decision views reuse the saved no-gold allocation comparison, housing forest/persistence forecasts, KHC disclosure packet, and 200,000-path covenant simulation. Each keeps its original source link and evidence boundary.
+- **Research approach:** six methods link to twelve actual project examples. The background section broadens the description of the body of work without assigning unconfirmed duties to former employers.

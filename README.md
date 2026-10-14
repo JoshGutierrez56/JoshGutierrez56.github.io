@@ -12,6 +12,8 @@ An interactive, evidence-linked portfolio: [joshgutierrez56.github.io](https://j
 - Expandable 60-second walkthroughs: the problem, implementation, key decision, lesson, next test, and discussion questions.
 - Direct project links such as `/#project-customization`, with the relevant walkthrough opened automatically.
 - Source-based charts and focused product demonstrations, alongside the original project artwork and research figures.
+- Four research-decision views spanning portfolio choices, model evaluation, disclosure evidence, and underwriting risk, reusing the underlying source-based exhibits.
+- Six evidence-linked research methods and an expanded cross-asset background section.
 - A portfolio-construction comparison using three reviewed aggregate observations, with visible assumptions and limits.
 - An account-size control that scales modeled annual transaction costs only; it does not forecast returns or interpolate portfolio results.
 - Links to public research repositories and demonstrations. Synthetic projects and work in progress are labeled separately.

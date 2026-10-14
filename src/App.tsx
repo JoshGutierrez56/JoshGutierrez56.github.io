@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { categories, github, projects, scenarios, type Category } from "./content";
 import ProjectCard from "./ProjectCard";
+import { DecisionExplorer, researchMethods } from "./ResearchBreadth";
 import { stories } from "./stories";
 import { featuredProjects, featuredSelection, isFeatured, linkedin, moreProjects } from "./projectSelection";
 
@@ -25,6 +26,7 @@ export default function App() {
   const [method, setMethod] = useState<(typeof scenarios)[number]["id"]>("turnover");
   const [account, setAccount] = useState(1000000);
   const [metric, setMetric] = useState<"te" | "turnover">("te");
+  const [researchLens, setResearchLens] = useState("portfolio");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [libraryOpen, setLibraryOpen] = useState<string | null>(null);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
@@ -127,14 +129,15 @@ export default function App() {
             </h1>
             <p className="p-hero-intro">
               I build portfolio models and research tools that make investment decisions easier
-              to examine. Explore five selected projects, their results, and the evidence behind them.
+              to examine. Explore six selected projects spanning portfolio construction, empirical
+              research, machine learning, and research engineering.
             </p>
             <div className="p-hero-actions">
               <a className="p-button" href="#work" onClick={reset}>
-                Explore my top five <Arrow />
+                Explore my top six <Arrow />
               </a>
               <a className="p-text-link" href="#tradeoffs">
-                Try a portfolio decision <Arrow />
+                Explore the research decisions <Arrow />
               </a>
             </div>
             <a className="p-hero-proof" href="#project-customization">
@@ -172,7 +175,7 @@ export default function App() {
           <div id="start" className="p-anchor" />
           <div className="p-section-heading">
             <div>
-              <p className="p-eyebrow">01 / Five featured projects</p>
+              <p className="p-eyebrow">01 / Six featured projects</p>
               <h2 id="work-heading">Investment questions.<br /><span>Work you can inspect.</span></h2>
             </div>
             <p>Start with portfolio decisions, research tools, or model evaluation. Each project includes an interactive exhibit, a 60-second walkthrough, and its sources.</p>
@@ -222,7 +225,6 @@ export default function App() {
             {featuredVisible.map((project) => (
               <ProjectCard key={project.id} project={project}
                 number={`0${featuredProjects.indexOf(project) + 1}`}
-                className={project.id === "customization" ? "p-featured-lead" : ""}
                 expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
             ))}
           </div>
@@ -258,12 +260,12 @@ export default function App() {
                       </span>
                       <span className="p-library-action">{libraryOpen === project.id ? "Close" : "Explore"}<Arrow /></span>
                     </summary>
-                    <ProjectCard project={project} embedded number={String(moreProjects.indexOf(project) + 6).padStart(2, "0")}
+                    <ProjectCard project={project} embedded number={String(moreProjects.indexOf(project) + featuredProjects.length + 1).padStart(2, "0")}
                       expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
                   </details>
                 ))}
               </div>
-              <a className="p-back-featured" href="#work" onClick={reset}>Back to the featured five <Arrow /></a>
+              <a className="p-back-featured" href="#work" onClick={reset}>Back to the featured six <Arrow /></a>
             </section>
           )}
         </section>
@@ -272,18 +274,21 @@ export default function App() {
           <div className="p-shell p-section">
             <div className="p-section-heading">
               <div>
-                <p className="p-eyebrow">02 / A closer look</p>
+                <p className="p-eyebrow">02 / Research in action</p>
                 <h2 id="scenario-heading">
-                  Less trading.
+                  Different questions.
                   <br />
-                  <span>At what cost?</span>
+                  <span>One standard of evidence.</span>
                 </h2>
               </div>
               <p>
-                One account. No gold allocation. Three implementation choices. Explore the tradeoff
-                in the saved 2014 to 2025 historical study.
+                Allocation, prediction, disclosure research, and risk each demand a different test.
+                Choose a decision to see what the evidence changes—and what it cannot establish.
               </p>
             </div>
+            <DecisionExplorer selected={researchLens} onChange={setResearchLens} />
+            {researchLens === "portfolio" && <div className="p-portfolio-decision">
+            <div className="p-decision-context"><h3>Is less trading worth more tracking risk?</h3><p>One no-gold account. Three allocation choices. Saved 2014–2025 historical results; the slider changes the illustrative cost scale, not the research.</p></div>
             <div className="p-scenario-grid">
               <div className="p-scenario-controls">
                 <span className="p-label">Choose an allocation method</span>
@@ -566,6 +571,7 @@ export default function App() {
               hypothetical restrictions and execution costs; no tax lots or calibrated market
               impact.
             </p>
+            </div>}
           </div>
         </section>
 
@@ -578,50 +584,25 @@ export default function App() {
             <div>
               <p className="p-eyebrow">03 / Research approach</p>
               <h2 id="approach-heading">
-                Make the reasoning
+                From an investment question
                 <br />
-                <span>reviewable.</span>
+                <span>to a defensible result.</span>
               </h2>
             </div>
             <p>
-              The useful output is not always a winning signal. Sometimes it is a better baseline, a
-              rejected hypothesis, or a clearer implementation decision.
+              My projects connect financial interpretation, statistical modeling, software, and
+              communication. These are the recurring methods—and the work where you can inspect them.
             </p>
           </div>
-          <div className="p-principles">
-            <article>
-              <span>01</span>
-              <h3>Start with the decision</h3>
-              <p>
-                Define the investment question, a simple comparison, and the cost of being wrong
-                before adding complexity.
-              </p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>Respect the information clock</h3>
-              <p>
-                Separate what was known then from what is known now. Record source timing, universe
-                selection, and the evaluation boundary.
-              </p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>Keep the inconvenient result</h3>
-              <p>
-                Distinguish software checks from empirical evidence. Preserve null results, missed
-                gates, and the limits of each claim.
-              </p>
-            </article>
+          <div className="p-principles p-evidence-methods">
+            {researchMethods.map((item, index) => <article key={item.title}>
+              <span>0{index + 1} / {item.area}</span><h3>{item.title}</h3><p>{item.description}</p>
+              <div className="p-method-evidence">{item.links.map(link => <a key={link.id} href={`#project-${link.id}`}>{link.label} <Arrow /></a>)}</div>
+            </article>)}
           </div>
-          <aside className="p-in-progress">
-            <span className="p-status">Research in progress</span>
-            <p>
-              <strong>Earnings reactions &amp; execution research.</strong> Earnings work remains
-              focused on source audits and evaluation design. The liquidity forecast comparison
-              above is complete within its historical sample; whether it improves execution costs
-              remains an open research question.
-            </p>
+          <aside className="p-evidence-boundaries">
+            <strong>Different evidence, different claims.</strong>
+            <p>Historical studies estimate what happened in a defined sample. Synthetic experiments test mechanics under known assumptions. Software tests check implementation. A useful demo still needs independent user evaluation before claiming real-world benefit.</p>
           </aside>
         </section>
 
@@ -630,9 +611,9 @@ export default function App() {
             <div>
               <p className="p-eyebrow">04 / Behind the work</p>
               <h2 id="about-heading">
-                Institutional context.
+                Investment perspective.
                 <br />
-                Independent curiosity.
+                Quantitative curiosity.
               </h2>
             </div>
             <div className="p-about-copy">
@@ -646,6 +627,16 @@ export default function App() {
                 Management, and Prime Buchholz. This site presents independent and student research,
                 not work products or endorsements from former employers.
               </p>
+              <p>
+                My independent work asks how information becomes a decision: how a client constraint
+                changes a portfolio, whether a model improves on a simple baseline, what a disclosure
+                actually supports, and how risk travels through an investment structure.
+              </p>
+              <div className="p-about-capabilities" aria-label="Areas of work">
+                <div><strong>Investments</strong><span>Equities · fixed income · real estate · multi-asset portfolios</span></div>
+                <div><strong>Methods</strong><span>Optimization · econometrics · ML / NLP · simulation</span></div>
+                <div><strong>Delivery</strong><span>Python / SQL · reproducible studies · interactive research tools</span></div>
+              </div>
               <p className="p-ownership">
                 I direct the research questions, investment interpretation, and project development.
                 These projects use AI-assisted development; the evidence and limitations remain part
