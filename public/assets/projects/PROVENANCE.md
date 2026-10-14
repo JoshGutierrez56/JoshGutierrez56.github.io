@@ -40,7 +40,15 @@ real-estate-risk.png   55d4c5cf8656a82c0c9049c7a8cee4809316adbf291e886e9e9bf7d0d
 covenant-risk.png      4ffccfd66cb26caa104850442bb08b40b9699b7377944bd006ae721aa7b5168f
 ```
 
-## SHA-256
+## Machine learning and deep-learning exhibits — October 14
+
+- **Deep Momentum:** the fold visual redraws the archived original chart using all nine saved synthetic fold records. Metric and fold controls inspect existing results, not fresh training or inference. Architecture text follows the executed compact-run code, including the actual 63-day input length. The downloadable audited source snapshot is distinct from the earlier original public repository. Synthetic evidence, nonstandard source Sharpe definition, and training/evaluation limitations are detailed in [the method note](deep-momentum-method.md).
+- **Sentiment Lab:** the cost-scenario comparison uses the public news-research evidence, separating pretrained transformer inference from model training. See [the evidence note](sentiment-evidence.md) for pinned sources, sample/split details and metric definitions. No restricted article text is republished.
+- **Housing random forest:** the interactive level/error comparison redraws the original archived evaluation chart from 61 unchanged prediction rows. It adds matched persistence comparison and month inspection; it does not create new forecasts. Metrics were independently recalculated. [Method and source lineage](housing-forest-method.md) · [Exact hashes](housing-forest-provenance.json) · [Evaluated source archive](housing-forest-source.zip). The original public notebook repository is not represented as containing the separate audited evaluation bundle.
+
+These are three distinct evidence categories: trained-network synthetic diagnostics, pretrained-model applied research, and historical tabular-ML evaluation. They do not establish profitable trading, production model ownership, or generalized deep-learning mastery.
+
+## Original artwork hashes
 
 ```text
 customization.png        91de1a183f1599d266a5c1c580e17cfc3204b9d791e42bdb0fb8606d2ed8d29c

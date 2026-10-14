@@ -1,0 +1,15 @@
+{
+  "data_mode": "synthetic",
+  "seed": 42,
+  "folds": 9,
+  "profitable_folds": 7,
+  "mean_cagr_pct": 45.75521166636623,
+  "mean_sharpe": 2.8009089253533803,
+  "mean_vol_pct": 10.159424139441393,
+  "worst_fold_max_drawdown_pct": -8.186149631730235,
+  "transaction_cost_bps": 5.0,
+  "asset_classes": [
+    "equity"
+  ],
+  "claim_limit": "Synthetic execution evidence only; no live or historical alpha claim."
+}

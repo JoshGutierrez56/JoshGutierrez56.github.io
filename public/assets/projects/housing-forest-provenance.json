@@ -1,0 +1,13 @@
+{
+  "archived_revision": "3cbb4e50f076b2056e104d22f2bc3cbc5527715d",
+  "original_public_revision": "6cc3ee3c3df5227280338a00dbae8b00c2e19f19",
+  "files": {
+    "run_analysis.py": "f16c3d5c6bd42a96034e9646fd7cd2e9508a56a44ca6eb55b02a047690a178c0",
+    "requirements.txt": "53ccbaaf8d02cf405a8a97afd718cdc1372322d1a2b4b6455542b19651c4fb02",
+    "results/metrics.json": "417988a4a4f46f1b6a50d8dd940dd70453b69d18c053fe5594307201ba7faeef",
+    "results/walk_forward_predictions.csv": "dfa0106fb6fd648aae45ff3419b32cdba4b8e198420b30c5d5e991d762944f5f",
+    "tests/test_data.py": "c8a6ea323ba0ff391d7ab084fba6091711201cb82f313ccbfb6798b9af7fd1e1",
+    "input_workbook_sha256": "534c63c7ed132f597a65abf060fa0a4d62d236b4fbe27f1766604d796fd4dc1d"
+  },
+  "metrics_independently_recalculated": true
+}

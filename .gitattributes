@@ -1,0 +1,4 @@
+# Preserve the exact archived evidence bytes and their source hashes.
+public/assets/projects/deep-momentum-folds.csv -text
+public/assets/projects/deep-momentum-summary.json -text
+public/assets/projects/housing-forest-predictions.csv -text

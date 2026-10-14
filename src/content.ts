@@ -1,9 +1,13 @@
 import { project as liquidityProject } from "./liquidityProject";
 import { project as covenantProject } from "./covenantProject";
 import { realEstateProject } from "./realEstateProject";
+import { project as deepMomentumProject } from "./deepMomentumProject";
+import { project as sentimentProject } from "./sentimentProject";
+import { project as housingForestProject } from "./housingForestProject";
 
 export const categories = [
   "All work",
+  "ML & deep learning",
   "Portfolio construction",
   "Empirical research",
   "Risk & underwriting",
@@ -174,6 +178,9 @@ export const projects: Project[] = [
   liquidityProject,
   realEstateProject,
   covenantProject,
+  deepMomentumProject,
+  sentimentProject,
+  housingForestProject,
 ];
 
 export const scenarios = [

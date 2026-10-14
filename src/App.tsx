@@ -109,7 +109,7 @@ export default function App() {
               <span>Clearer decisions.</span>
             </h1>
             <p className="p-hero-intro">
-              My work connects investment questions to portfolio models, research tools, and
+              My work connects investment questions to portfolio models, machine learning, and
               decisions you can inspect. Here is what I built, what I learned, and why it matters.
             </p>
             <div className="p-hero-actions">
@@ -150,7 +150,7 @@ export default function App() {
           <div className="p-start-heading">
             <p className="p-eyebrow">A quick way into the work</p>
             <h2 id="start-heading">Start with a decision.</h2>
-            <p>Three projects. Three different ways of turning research into something useful.</p>
+            <p>Choose a decision to investigate, or explore the machine-learning studies below.</p>
           </div>
           <div className="p-story-routes">
             {[
@@ -164,6 +164,16 @@ export default function App() {
                 <p>{route.text}</p>
               </a>
             ))}
+          </div>
+          <div className="p-ml-routes" aria-labelledby="ml-heading">
+            <div className="p-ml-heading"><div><p className="p-eyebrow">Machine learning &amp; deep learning</p><h3 id="ml-heading">Inside the model. Beyond the score.</h3></div><p>Three different disciplines: training a neural network, evaluating pretrained transformers, and testing a tree ensemble against a simple baseline.</p></div>
+            <div className="p-new-research-links">
+              {[
+                { id: "deep-momentum", area: "PyTorch · trained LSTM", title: "Learn a position, not a price", scope: "Synthetic training & evaluation" },
+                { id: "sentiment-lab", area: "Transformers · applied NLP", title: "Does sentiment survive costs?", scope: "Pretrained models · real-news study" },
+                { id: "housing-forest", area: "scikit-learn · random forest", title: "When a high R² is not enough", scope: "Historical monthly walk-forward study" },
+              ].map((route) => <a key={route.id} href={`#project-${route.id}`} onClick={() => showProject(route.id)}><span>{route.area}</span><strong>{route.title}</strong><Arrow /><small>{route.scope}</small></a>)}
+            </div>
           </div>
           <div className="p-new-research" aria-label="New research to explore">
             <p className="p-eyebrow">More investment questions to explore</p>
