@@ -10,9 +10,8 @@ export const featuredSelection = [
 ] as const;
 
 export const moreProjectIds = [
-  "optlab", "risk-parity", "macro-hmm",
-  "deep-momentum", "news-research", "housing-forest", "real-estate-risk",
-  "covenant-risk", "corporate-niche", "trading-floor",
+  "optlab", "news-research", "macro-hmm", "risk-parity", "housing-forest",
+  "covenant-risk", "corporate-niche", "deep-momentum", "trading-floor", "real-estate-risk",
 ];
 
 const findProject = (id: string) => {
