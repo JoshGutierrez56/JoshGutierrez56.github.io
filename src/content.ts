@@ -78,6 +78,7 @@ export const projects: Project[] = [
         label: "View source",
         href: "https://github.com/JoshGutierrez56/pure-news-intelligence-demo",
       },
+      { label: "Why the research changed direction", href: "#project-news-research" },
     ],
   },
   {

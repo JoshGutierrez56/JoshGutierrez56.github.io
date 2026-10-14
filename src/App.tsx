@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { categories, github, projects, scenarios, type Category } from "./content";
-import ProjectVisual from "./ProjectVisual";
+import ProjectCard from "./ProjectCard";
 import { stories } from "./stories";
+import { featuredProjects, featuredSelection, isFeatured, linkedin, moreProjects } from "./projectSelection";
 
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
@@ -25,11 +26,13 @@ export default function App() {
   const [account, setAccount] = useState(1000000);
   const [metric, setMetric] = useState<"te" | "turnover">("te");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [libraryOpen, setLibraryOpen] = useState<string | null>(null);
   const [scrollTarget, setScrollTarget] = useState<string | null>(null);
   const showProject = (id: string) => {
     setCategory("All work");
     setQuery("");
     setExpanded(id);
+    setLibraryOpen(isFeatured(id) ? null : id);
     setScrollTarget(id);
   };
   useEffect(() => {
@@ -43,7 +46,10 @@ export default function App() {
   }, []);
   useEffect(() => {
     if (!scrollTarget) return;
-    document.getElementById(`project-${scrollTarget}`)?.scrollIntoView({ block: "start" });
+    const target = document.getElementById(`project-${scrollTarget}`);
+    target?.scrollIntoView({ block: "start" });
+    const focusTarget = target?.matches("details") ? target.querySelector<HTMLElement>(":scope > summary") : target;
+    focusTarget?.focus({ preventScroll: true });
     setScrollTarget(null);
   }, [scrollTarget]);
   const visible = useMemo(
@@ -59,6 +65,14 @@ export default function App() {
     [category, query],
   );
   const selected = scenarios.find((item) => item.id === method) ?? scenarios[2];
+  const featuredVisible = featuredProjects.filter((project) => visible.includes(project));
+  const moreVisible = moreProjects.filter((project) => visible.includes(project));
+  const isFiltering = Boolean(query || category !== "All work");
+  const toggleStory = (id: string) => {
+    const opening = expanded !== id;
+    setExpanded(opening ? id : null);
+    if (opening) setScrollTarget(id);
+  };
   const money = (value: number) =>
     new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -75,7 +89,11 @@ export default function App() {
   };
 
   return (
-    <div className="portfolio-root">
+    <div className="portfolio-root" onClick={(event) => {
+      const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#project-"]');
+      const id = link?.getAttribute("href")?.replace("#project-", "");
+      if (id && projects.some((project) => project.id === id)) showProject(id);
+    }}>
       <a className="p-skip" href="#main">
         Skip to content
       </a>
@@ -87,9 +105,8 @@ export default function App() {
           <span className="p-brand-name">Josh Gutierrez</span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#work">Projects</a>
-          <a href="#start">Start here</a>
-          <a href="#approach">Approach</a>
+          <a href="#work" onClick={reset}>Featured</a>
+          <a href="#more-projects" onClick={reset}>More projects</a>
           <a href="#about">About</a>
         </nav>
         <a className="p-github" href={github} target="_blank" rel="noreferrer">
@@ -109,17 +126,22 @@ export default function App() {
               <span>Clearer decisions.</span>
             </h1>
             <p className="p-hero-intro">
-              My work connects investment questions to portfolio models, machine learning, and
-              decisions you can inspect. Here is what I built, what I learned, and why it matters.
+              I build portfolio models and research tools that make investment decisions easier
+              to examine. Explore five selected projects, their results, and the evidence behind them.
             </p>
             <div className="p-hero-actions">
-              <a className="p-button" href="#start">
-                Find a project to explore <Arrow />
+              <a className="p-button" href="#work" onClick={reset}>
+                Explore my top five <Arrow />
               </a>
               <a className="p-text-link" href="#tradeoffs">
                 Try a portfolio decision <Arrow />
               </a>
             </div>
+            <a className="p-hero-proof" href="#project-customization">
+              <span className="p-label">Inside the portfolio oversight lab</span>
+              <strong>30 portfolio paths. Independently checked.</strong>
+              <span>Python + SQL reconstruction · five injected faults caught <Arrow /></span>
+            </a>
             <div className="p-hero-foot">
               <span>MBA + MS in Finance</span>
               <span>
@@ -146,72 +168,33 @@ export default function App() {
           </figure>
         </section>
 
-        <section id="start" className="p-start p-shell" aria-labelledby="start-heading">
-          <div className="p-start-heading">
-            <p className="p-eyebrow">A quick way into the work</p>
-            <h2 id="start-heading">Start with a decision.</h2>
-            <p>Choose a decision to investigate, or explore the machine-learning studies below.</p>
-          </div>
-          <div className="p-story-routes">
-            {[
-              { id: "customization", number: "01", area: "Portfolio construction", title: "What does a restriction cost?", text: "Compare three allocations, then see how an independent check challenges the results." },
-              { id: "pure-news", number: "02", area: "Research engineering", title: "What actually changed?", text: "Follow a disclosure change from its source to a research question worth investigating." },
-              { id: "news-research", number: "03", area: "Empirical research", title: "When should an idea stop?", text: "See how a null result redirected a forecasting study toward an analyst tool." },
-            ].map((route) => (
-              <a key={route.id} href={`#project-${route.id}`} className="p-story-route" onClick={() => showProject(route.id)}>
-                <span className="p-route-meta"><span>{route.number}</span>{route.area}<Arrow /></span>
-                <h3>{route.title}</h3>
-                <p>{route.text}</p>
-              </a>
-            ))}
-          </div>
-          <div className="p-ml-routes" aria-labelledby="ml-heading">
-            <div className="p-ml-heading"><div><p className="p-eyebrow">Machine learning &amp; deep learning</p><h3 id="ml-heading">Inside the model. Beyond the score.</h3></div><p>Three different disciplines: training a neural network, evaluating pretrained transformers, and testing a tree ensemble against a simple baseline.</p></div>
-            <div className="p-new-research-links">
-              {[
-                { id: "deep-momentum", area: "PyTorch · trained LSTM", title: "Learn a position, not a price", scope: "Synthetic training & evaluation" },
-                { id: "sentiment-lab", area: "Transformers · applied NLP", title: "Does sentiment survive costs?", scope: "Pretrained models · real-news study" },
-                { id: "housing-forest", area: "scikit-learn · random forest", title: "When a high R² is not enough", scope: "Historical monthly walk-forward study" },
-              ].map((route) => <a key={route.id} href={`#project-${route.id}`} onClick={() => showProject(route.id)}><span>{route.area}</span><strong>{route.title}</strong><Arrow /><small>{route.scope}</small></a>)}
-            </div>
-          </div>
-          <div className="p-new-research" aria-label="New research to explore">
-            <p className="p-eyebrow">More investment questions to explore</p>
-            <div className="p-new-research-links">
-              {[
-                { id: "liquidity", area: "Quantitative research", title: "Does complexity earn its place?" },
-                { id: "real-estate-risk", area: "Real-estate allocation", title: "How much risk is hidden?" },
-                { id: "covenant-risk", area: "Credit & underwriting", title: "Will the loan pass along the way?" },
-              ].map((route) => <a key={route.id} href={`#project-${route.id}`} onClick={() => showProject(route.id)}><span>{route.area}</span><strong>{route.title}</strong><Arrow /></a>)}
-            </div>
-          </div>
-        </section>
-
         <section id="work" className="p-work p-shell p-section" aria-labelledby="work-heading">
+          <div id="start" className="p-anchor" />
           <div className="p-section-heading">
             <div>
-              <p className="p-eyebrow">01 / Selected work</p>
-              <h2 id="work-heading">
-                The question. The build.
-                <br />
-                <span>The lesson.</span>
-              </h2>
+              <p className="p-eyebrow">01 / Five featured projects</p>
+              <h2 id="work-heading">Investment questions.<br /><span>Work you can inspect.</span></h2>
             </div>
-            <p>
-              Get the idea at a glance. Open a project for the short story, the key design
-              decision, and the evidence behind the result.
-            </p>
+            <p>Start with portfolio decisions, research tools, or model evaluation. Each project includes an interactive exhibit, a 60-second walkthrough, and its sources.</p>
+          </div>
+          <nav className="p-featured-index" aria-label="Jump to a featured project">
+            {featuredSelection.map((project, index) => (
+              <a key={project.id} href={`#project-${project.id}`}>
+                <span className="p-index-number">0{index + 1}</span>
+                <span><strong>{project.label}</strong><small>{project.area}</small></span>
+                <Arrow />
+              </a>
+            ))}
+          </nav>
+          <div className="p-collection-links">
+            <a href="#more-projects" onClick={reset}>Browse seven more projects <Arrow /></a>
+            <a href="#project-deep-momentum">Explore the trained LSTM <Arrow /></a>
           </div>
           <div className="p-work-tools">
             <div className="p-filter-group" role="group" aria-label="Filter projects by category">
               {categories.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  aria-pressed={category === item}
-                  className={category === item ? "is-active" : ""}
-                  onClick={() => setCategory(item)}
-                >
+                <button key={item} type="button" aria-pressed={category === item}
+                  className={category === item ? "is-active" : ""} onClick={() => setCategory(item)}>
                   {item}
                 </button>
               ))}
@@ -222,83 +205,66 @@ export default function App() {
                 <path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.5" />
               </svg>
               <span className="p-sr-only">Search projects</span>
-              <input
-                type="search"
-                placeholder="Search questions, methods..."
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
+              <input type="search" placeholder="Search all 12 projects..." value={query}
+                onChange={(event) => setQuery(event.target.value)} />
             </label>
           </div>
           <div className="p-results-meta">
             <p role="status" aria-live="polite">
-              {visible.length} of {projects.length} projects
+              {isFiltering ? `${visible.length} of ${projects.length} projects` : `${featuredVisible.length} featured projects`}
+              <span aria-hidden="true"> &middot; </span>
+              {isFiltering && `${featuredVisible.length} featured / `}{moreVisible.length} more
             </p>
-            {(query || category !== "All work") && (
-              <button type="button" onClick={reset}>
-                Reset filters
-              </button>
-            )}
+            {isFiltering ? <button type="button" onClick={reset}>Reset filters</button>
+              : <a href="#more-projects">Jump to more projects <Arrow /></a>}
           </div>
-          <div className="p-project-list">
-            {visible.map((project) => {
-              const story = stories[project.id];
-              return (
-                <article className="p-story-card" id={`project-${project.id}`} key={project.id} aria-labelledby={`title-${project.id}`}>
-                  <div className="p-story-visual"><ProjectVisual id={project.id} /></div>
-                  <div className="p-story-copy">
-                    <div className="p-story-kicker"><span>{project.number} / {project.category}</span><span className="p-status">{project.status}</span></div>
-                    <h3 id={`title-${project.id}`}>{project.title}</h3>
-                    <p className="p-story-subtitle">{story.subtitle}</p>
-                    <div className="p-story-takeaway"><span className="p-label">The takeaway</span><p>{story.takeaway}</p></div>
-                    <p className="p-story-scope">{story.evidenceNote}</p>
-                    <details className="p-story-detail" open={expanded === project.id}>
-                      <summary onClick={(event) => {
-                        event.preventDefault();
-                        const opening = expanded !== project.id;
-                        setExpanded(opening ? project.id : null);
-                        if (opening) setScrollTarget(project.id);
-                      }}>
-                        <span>{expanded === project.id ? "Close the walkthrough" : "Walk through the project"}</span><span aria-hidden="true">{expanded === project.id ? "−" : "+"}</span>
-                      </summary>
-                      <div className="p-story-expanded">
-                        <div className="p-short-story"><p className="p-eyebrow">The 60-second story</p><p>{story.walkthrough}</p></div>
-                        <ol className="p-story-workflow" aria-label="How the project works">
-                          {story.steps.map((step, index) => <li key={step.label}><span className="p-step-number">0{index + 1}</span><div><h4>{step.label}</h4><p>{step.description}</p></div></li>)}
-                        </ol>
-                        <div className="p-story-chapters">
-                          <section><h4>The problem</h4><p>{story.context}</p></section>
-                          <section><h4>What I built</h4><p>{story.approach}</p></section>
-                          <section><h4>The key decision</h4><p>{story.decision}</p></section>
-                          <section><h4>What I learned</h4><p>{story.learning}</p></section>
-                        </div>
-                        <div className="p-story-next"><h4>What I would test next</h4><p>{story.nextStep}</p></div>
-                        <div className="p-discussion"><h4>Go one level deeper</h4><ul>{story.discussion.map((item) => <li key={item}>{item}</li>)}</ul></div>
-                        <details className="p-story-evidence">
-                          <summary>Results, methods &amp; boundaries <span aria-hidden="true">+</span></summary>
-                          <div><p><strong>Result.</strong> {project.result}</p><p><strong>Scope.</strong> {project.limitation}</p><p><strong>Implementation.</strong> {project.contribution}</p>
-                            <ul className="p-tags" aria-label="Methods">{project.methods.map((item) => <li key={item}>{item}</li>)}</ul>
-                          </div>
-                        </details>
-                        <a className="p-project-permalink" href={`#project-${project.id}`}>Link to this project <Arrow /></a>
-                      </div>
-                    </details>
-                    <div className="p-source-links p-story-links">
-                      {project.links.map((link) => <a key={link.href} href={link.href} download={link.download || undefined} target={link.href.startsWith("https") ? "_blank" : undefined} rel={link.href.startsWith("https") ? "noreferrer" : undefined}>{link.label}<Arrow diagonal={link.href.startsWith("https")} /></a>)}
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+          <div className="p-project-list" aria-label="Featured projects">
+            {featuredVisible.map((project) => (
+              <ProjectCard key={project.id} project={project}
+                number={`0${featuredProjects.indexOf(project) + 1}`}
+                className={project.id === "customization" ? "p-featured-lead" : ""}
+                expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
+            ))}
           </div>
+          {featuredVisible.length === 0 && moreVisible.length > 0 && (
+            <p className="p-filter-notice">Your matches are in <a href="#more-projects">More projects <Arrow /></a> below.</p>
+          )}
           {visible.length === 0 && (
             <div className="p-empty">
               <h3>No projects match this combination.</h3>
               <p>Try a broader search, or return to all {projects.length} projects.</p>
-              <button className="p-button" type="button" onClick={reset}>
-                Show all work <Arrow />
-              </button>
+              <button className="p-button" type="button" onClick={reset}>Show all work <Arrow /></button>
             </div>
+          )}
+          {(moreVisible.length > 0 || !isFiltering) && (
+            <section id="more-projects" className="p-more-projects" aria-labelledby="more-heading">
+              <div className="p-more-heading">
+                <div><p className="p-eyebrow">Further explorations</p><h2 id="more-heading">More projects<span> / {moreVisible.length}</span></h2></div>
+                <p>Neural networks, real estate, credit risk, and more. Open a project for its original interactive exhibit and complete research story.</p>
+              </div>
+              <div className="p-library-list">
+                {moreVisible.map((project) => (
+                  <details className="p-library-item" id={`project-${project.id}`} key={project.id} open={libraryOpen === project.id}>
+                    <summary onClick={(event) => {
+                      event.preventDefault();
+                      const opening = libraryOpen !== project.id;
+                      setLibraryOpen(opening ? project.id : null);
+                      if (opening) setExpanded(project.id);
+                    }}>
+                      <span className="p-library-label">
+                        <span className="p-library-meta">{project.category} &middot; {project.status}</span>
+                        <strong>{project.title}</strong>
+                        <span className="p-library-description">{stories[project.id].subtitle}</span>
+                      </span>
+                      <span className="p-library-action">{libraryOpen === project.id ? "Close" : "Explore"}<Arrow /></span>
+                    </summary>
+                    <ProjectCard project={project} embedded number={String(moreProjects.indexOf(project) + 6).padStart(2, "0")}
+                      expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
+                  </details>
+                ))}
+              </div>
+              <a className="p-back-featured" href="#work" onClick={reset}>Back to the featured five <Arrow /></a>
+            </section>
           )}
         </section>
 
@@ -685,9 +651,10 @@ export default function App() {
                 These projects use AI-assisted development; the evidence and limitations remain part
                 of the work.
               </p>
-              <a className="p-text-link" href={github} target="_blank" rel="noreferrer">
-                Explore my GitHub and get in touch <Arrow diagonal />
-              </a>
+              <div className="p-contact-links">
+                <a className="p-button" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <Arrow diagonal /></a>
+                <a className="p-text-link" href={github} target="_blank" rel="noreferrer">Explore my GitHub <Arrow diagonal /></a>
+              </div>
             </div>
           </div>
         </section>

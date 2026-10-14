@@ -10,6 +10,7 @@ import "./real-estate-visual.css";
 import "./deep-momentum-visual.css";
 import "./sentiment-visual.css";
 import "./housing-forest-visual.css";
+import "./curation.css";
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Portfolio root is missing.");
