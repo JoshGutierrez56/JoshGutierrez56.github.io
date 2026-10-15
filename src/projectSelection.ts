@@ -24,4 +24,5 @@ const findProject = (id: string) => {
 export const featuredProjects = featuredSelection.map(({ id }) => findProject(id));
 export const moreProjects = moreProjectIds.map(findProject);
 export const isFeatured = (id: string) => featuredProjects.some((project) => project.id === id);
-export const linkedin = "https://www.linkedin.com/in/josh-gutierrez-55375a142/";
+// Owner identified the previous destination as incorrect; awaiting the correct URL.
+export const linkedin: string | null = null;

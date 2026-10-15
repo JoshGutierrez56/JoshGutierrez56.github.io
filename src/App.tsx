@@ -3,6 +3,7 @@ import { categories, github, projects, scenarios, type Category } from "./conten
 import ProjectCard from "./ProjectCard";
 import { DecisionExplorer, researchMethods } from "./ResearchBreadth";
 import { stories } from "./stories";
+import { outcomes } from "./outcomes";
 import { featuredProjects, featuredSelection, isFeatured, linkedin, moreProjects } from "./projectSelection";
 
 
@@ -59,7 +60,7 @@ export default function App() {
       projects.filter(
         (project) =>
           (category === "All work" || project.category === category) &&
-          [project.title, project.question, project.result, project.category, stories[project.id].subtitle, ...project.methods]
+          [project.title, project.question, project.result, project.category, stories[project.id].subtitle, outcomes[project.id].finding, ...project.methods]
             .join(" ")
             .toLowerCase()
             .includes(query.trim().toLowerCase()),
@@ -123,14 +124,13 @@ export default function App() {
               <span className="p-dot" /> Josh Gutierrez / Investment research
             </p>
             <h1 id="hero-heading">
-              Better questions.
+              Investment research.
               <br />
-              <span>Clearer decisions.</span>
+              <span>Built for decisions.</span>
             </h1>
             <p className="p-hero-intro">
-              I build portfolio models and research tools that make investment decisions easier
-              to examine. Explore six selected projects spanning portfolio construction, empirical
-              research, machine learning, and research engineering.
+              I build constrained portfolios, test whether models add value, and turn corporate
+              disclosures into traceable research. Start with the finding. Inspect the evidence.
             </p>
             <div className="p-hero-actions">
               <a className="p-button" href="#work" onClick={reset}>
@@ -141,9 +141,9 @@ export default function App() {
               </a>
             </div>
             <a className="p-hero-proof" href="#project-customization">
-              <span className="p-label">Inside the portfolio oversight lab</span>
-              <strong>30 portfolio paths. Independently checked.</strong>
-              <span>Python + SQL reconstruction · five injected faults caught <Arrow /></span>
+              <span className="p-label">Portfolio customization / historical result</span>
+              <strong>35.5% median reduction in tracking error.</strong>
+              <span>Minimum-risk versus proportional allocation · nine scenarios · net of modeled costs <Arrow /></span>
             </a>
             <div className="p-hero-foot">
               <span>MBA + MS in Finance</span>
@@ -176,9 +176,9 @@ export default function App() {
           <div className="p-section-heading">
             <div>
               <p className="p-eyebrow">01 / Six featured projects</p>
-              <h2 id="work-heading">Investment questions.<br /><span>Work you can inspect.</span></h2>
+              <h2 id="work-heading">What the work delivers.<br /><span>Why it matters.</span></h2>
             </div>
-            <p>Start with portfolio decisions, research tools, or model evaluation. Each project includes an interactive exhibit, a 60-second walkthrough, and its sources.</p>
+            <p>Six projects, each led by a finding or a working capability. Explore the original exhibits, then open the evidence and implementation when you want more detail.</p>
           </div>
           <nav className="p-featured-index" aria-label="Jump to a featured project">
             {featuredSelection.map((project, index) => (
@@ -241,8 +241,8 @@ export default function App() {
           {(moreVisible.length > 0 || !isFiltering) && (
             <section id="more-projects" className="p-more-projects" aria-labelledby="more-heading">
               <div className="p-more-heading">
-                <div><p className="p-eyebrow">Further explorations</p><h2 id="more-heading">More projects<span> / {moreVisible.length}</span></h2></div>
-                <p>Neural networks, real estate, credit risk, and more. Open a project for its original interactive exhibit and complete research story.</p>
+                <div><p className="p-eyebrow">More findings & tools</p><h2 id="more-heading">More projects<span> / {moreVisible.length}</span></h2></div>
+                <p>Additional work in neural networks, real estate, credit risk, and more. Each summary tells you what the project contributes before you open it.</p>
               </div>
               <div className="p-library-list">
                 {moreVisible.map((project) => (
@@ -256,7 +256,7 @@ export default function App() {
                       <span className="p-library-label">
                         <span className="p-library-meta">{project.category} &middot; {project.status}</span>
                         <strong>{project.title}</strong>
-                        <span className="p-library-description">{stories[project.id].subtitle}</span>
+                        <span className="p-library-description">{outcomes[project.id].finding}</span>
                       </span>
                       <span className="p-library-action">{libraryOpen === project.id ? "Close" : "Explore"}<Arrow /></span>
                     </summary>
@@ -276,19 +276,19 @@ export default function App() {
               <div>
                 <p className="p-eyebrow">02 / Research in action</p>
                 <h2 id="scenario-heading">
-                  Different questions.
+                  See what changes
                   <br />
-                  <span>One standard of evidence.</span>
+                  <span>the decision.</span>
                 </h2>
               </div>
               <p>
-                Allocation, prediction, disclosure research, and risk each demand a different test.
-                Choose a decision to see what the evidence changes—and what it cannot establish.
+                Less trading can buy very little cost relief. A simple forecast can beat a complex
+                model. Explore the evidence behind four investment and research decisions.
               </p>
             </div>
             <DecisionExplorer selected={researchLens} onChange={setResearchLens} />
             {researchLens === "portfolio" && <div className="p-portfolio-decision">
-            <div className="p-decision-context"><h3>Is less trading worth more tracking risk?</h3><p>One no-gold account. Three allocation choices. Saved 2014–2025 historical results; the slider changes the illustrative cost scale, not the research.</p></div>
+            <div className="p-decision-context"><h3>60% less trading bought only $110 of annual cost relief per $1 million.</h3><p>It also added about 27 basis points of tracking error versus minimum-risk allocation in the no-gold account. Compare the trade-off below. Saved 2014–2025 historical results with assumed costs; the slider only changes the illustrative dollar scale.</p></div>
             <div className="p-scenario-grid">
               <div className="p-scenario-controls">
                 <span className="p-label">Choose an allocation method</span>
@@ -582,16 +582,16 @@ export default function App() {
         >
           <div className="p-section-heading">
             <div>
-              <p className="p-eyebrow">03 / Research approach</p>
+              <p className="p-eyebrow">03 / Capabilities in practice</p>
               <h2 id="approach-heading">
-                From an investment question
+                Financial judgment.
                 <br />
-                <span>to a defensible result.</span>
+                <span>Demonstrated in the work.</span>
               </h2>
             </div>
             <p>
-              My projects connect financial interpretation, statistical modeling, software, and
-              communication. These are the recurring methods—and the work where you can inspect them.
+              Portfolio construction, model evaluation, risk analysis and research engineering.
+              Each capability below connects to something you can examine.
             </p>
           </div>
           <div className="p-principles p-evidence-methods">
@@ -611,26 +611,27 @@ export default function App() {
             <div>
               <p className="p-eyebrow">04 / Behind the work</p>
               <h2 id="about-heading">
-                Investment perspective.
+                Investment context.
                 <br />
-                Quantitative curiosity.
+                Hands-on research.
               </h2>
             </div>
             <div className="p-about-copy">
               <p>
+                I connect investment questions to models, evidence and tools that an investment
+                team can examine. My work spans constrained allocation, model comparison,
+                disclosure research and risk analysis.
+              </p>
+              <p>
                 I’m Josh Gutierrez, an MBA and MS in Finance graduate from Northeastern University.
-                My background spans institutional portfolio analytics, fixed-income communication,
-                and investment research.
+                My background spans institutional portfolio analytics, fixed-income communication
+                and investment research, with prior experience at AEW Capital Management,
+                Loomis Sayles, Wellington Management and Prime Buchholz.
               </p>
               <p>
-                Prior experience includes AEW Capital Management, Loomis Sayles, Wellington
-                Management, and Prime Buchholz. This site presents independent and student research,
-                not work products or endorsements from former employers.
-              </p>
-              <p>
-                My independent work asks how information becomes a decision: how a client constraint
-                changes a portfolio, whether a model improves on a simple baseline, what a disclosure
-                actually supports, and how risk travels through an investment structure.
+                This portfolio presents independent and student research, not work products or
+                endorsements from former employers. It shows how I frame a decision, build and
+                check the analysis, and explain what the evidence supports.
               </p>
               <div className="p-about-capabilities" aria-label="Areas of work">
                 <div><strong>Investments</strong><span>Equities · fixed income · real estate · multi-asset portfolios</span></div>
@@ -643,8 +644,8 @@ export default function App() {
                 of the work.
               </p>
               <div className="p-contact-links">
-                <a className="p-button" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <Arrow diagonal /></a>
-                <a className="p-text-link" href={github} target="_blank" rel="noreferrer">Explore my GitHub <Arrow diagonal /></a>
+                {linkedin && <a className="p-button" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <Arrow diagonal /></a>}
+                <a className={linkedin ? "p-text-link" : "p-button"} href={github} target="_blank" rel="noreferrer">Explore my GitHub <Arrow diagonal /></a>
               </div>
             </div>
           </div>

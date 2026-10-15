@@ -50,6 +50,7 @@ export const projects: Project[] = [
     methods: ["WRDS / CRSP", "CVXPY", "Ledoit-Wolf", "Walk-forward evaluation"],
     links: [
       { label: "Open the oversight lab", href: "https://joshgutierrez56.github.io/personalized-model-portfolios/" },
+      { label: "Explore the tax-lot transition lab", href: "https://joshgutierrez56.github.io/personalized-model-portfolios/transition-lab.html" },
       { label: "View research & code", href: "https://github.com/JoshGutierrez56/personalized-model-portfolios" },
       { label: "Explore the scenario", href: "#tradeoffs" },
       { label: "Read the case study", href: "/assets/portfolio-case-study.md", download: true },

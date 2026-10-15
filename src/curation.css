@@ -1,4 +1,12 @@
 /* A small editorial layer over the existing visual system. */
+.p-story-lead { border-bottom: 1px solid var(--p-line); }
+.p-story-implication { font-size: 13px; line-height: 1.8; color: var(--p-muted); margin-top: 17px; }
+.p-story-implication strong { font-weight: 600; color: var(--p-ink); }
+.p-story-support { padding-top: 16px; }
+.p-story-support .p-story-detail { margin-top: 0; }
+@media (min-width: 1100px) {
+  .p-story-card:has(.p-story-detail[open]) > .p-story-lead { grid-column: 1 / -1; border-left: 0; }
+}
 .p-header nav a, .p-github { min-height: 44px; display: inline-flex; align-items: center; }
 .p-hero { padding-block: 46px 54px; gap: 55px; }
 .p-hero h1 { font-size: clamp(46px, 4.9vw, 72px); margin-block: 23px; }

@@ -1,6 +1,7 @@
 import type { Project } from "./content";
 import ProjectVisual from "./ProjectVisual";
 import { stories } from "./stories";
+import { outcomes } from "./outcomes";
 
 type ProjectCardProps = {
   project: Project;
@@ -34,6 +35,7 @@ export default function ProjectCard({
   embedded = false,
 }: ProjectCardProps) {
   const story = stories[project.id];
+  const outcome = outcomes[project.id];
 
   return (
     <article
@@ -42,22 +44,31 @@ export default function ProjectCard({
       tabIndex={-1}
       aria-labelledby={`title-${project.id}`}
     >
-      <div className="p-story-visual"><ProjectVisual id={project.id} /></div>
-      <div className="p-story-copy">
+      <div className="p-story-copy p-story-lead">
         <div className="p-story-kicker"><span>{number ?? project.number} / {project.category}</span><span className="p-status">{project.status}</span></div>
         <h3 id={`title-${project.id}`} tabIndex={-1}>{project.title}</h3>
-        <p className="p-story-subtitle">{story.subtitle}</p>
-        <div className="p-story-takeaway"><span className="p-label">The takeaway</span><p>{story.takeaway}</p></div>
+        <div className="p-story-takeaway"><span className="p-label">{outcome.kind}</span><p>{outcome.finding}</p></div>
+        <p className="p-story-implication"><strong>Why it matters.</strong> {outcome.implication}</p>
         <p className="p-story-scope">{story.evidenceNote}</p>
+      </div>
+      <div className="p-story-visual"><ProjectVisual id={project.id} /></div>
+      <div className="p-story-copy p-story-support">
         <details className="p-story-detail" open={expanded}>
           <summary onClick={(event) => {
             event.preventDefault();
             onToggle();
           }}>
-            <span>{expanded ? "Close the walkthrough" : "Walk through the project"}</span><span aria-hidden="true">{expanded ? "−" : "+"}</span>
+            <span>{expanded ? "Close the evidence" : "Explore the evidence"}</span><span aria-hidden="true">{expanded ? "−" : "+"}</span>
           </summary>
           <div className="p-story-expanded">
-            <div className="p-short-story"><p className="p-eyebrow">The 60-second story</p><p>{story.walkthrough}</p></div>
+            <div className="p-short-story"><p className="p-eyebrow">The result in context</p><p>{project.result}</p></div>
+            <div className="p-story-chapters">
+              <section><h4>What I built</h4><p>{project.contribution}</p></section>
+              <section><h4>How to interpret it</h4><p>{project.limitation}</p></section>
+            </div>
+            <details className="p-story-evidence">
+              <summary>Method, checks &amp; further questions <span aria-hidden="true">+</span></summary>
+              <div>
             <ol className="p-story-workflow" aria-label="How the project works">
               {story.steps.map((step, index) => <li key={step.label}><span className="p-step-number">0{index + 1}</span><div><h4>{step.label}</h4><p>{step.description}</p></div></li>)}
             </ol>
@@ -73,6 +84,8 @@ export default function ProjectCard({
               <summary>Results, methods &amp; boundaries <span aria-hidden="true">+</span></summary>
               <div><p><strong>Result.</strong> {project.result}</p><p><strong>Scope.</strong> {project.limitation}</p><p><strong>Implementation.</strong> {project.contribution}</p>
                 <ul className="p-tags" aria-label="Methods">{project.methods.map((item) => <li key={item}>{item}</li>)}</ul>
+              </div>
+            </details>
               </div>
             </details>
             <a className="p-project-permalink" href={`#project-${project.id}`}>Link to this project <Arrow /></a>
