@@ -3,6 +3,7 @@
 export type Outcome = { kind: "Finding" | "Delivered capability"; finding: string; implication: string };
 
 export const outcomes: Record<string, Outcome> = {
+  "macro-regime": {kind: "Finding", finding: "A 1.06 validation information ratio reversed to -0.48 in the later evaluation at ten-basis-point trading costs.", implication: "A signal needs to survive changing conditions, not just fit an earlier sample. The public evidence preserves both outcomes."},
   customization: {
     kind: "Finding",
     finding: "Trading about 60% less saved only $110 a year per $1 million, while adding 27 basis points of tracking error in the historical no-gold account.",

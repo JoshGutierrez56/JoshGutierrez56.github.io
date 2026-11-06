@@ -34,6 +34,23 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "macro-regime",
+    number: "17",
+    title: "Macroeconomic Signals and Tactical Asset Allocation",
+    category: "Portfolio construction",
+    status: "Working paper ? provisional historical evidence",
+    question: "Does a simple macro allocation signal retain its value when the economic environment changes?",
+    contribution: "Evaluated a monthly allocation rule with historical information cutoffs, explicit execution timing and drift-aware costs; built a two-page native Power BI report and a public results companion.",
+    result: "At 10 bps, information ratio changed from 1.06 in 2018?2021 validation to ?0.48 in the later 46-period evaluation. The paper examines persistence, attribution and portfolio risk.",
+    limitation: "Source-return reconciliation remains open. Retrospective diagnostics are not independent confirmation; not peer reviewed, live performance or investment advice. The native Power BI workspace is private.",
+    methods: ["Historical macro vintages", "Python", "Transaction-cost accounting", "Power BI"],
+    links: [
+      { label: "Explore the results", href: "/assets/macro-regime/index.html" },
+      { label: "Read the working paper", href: "/assets/macro-regime/working-paper.pdf" },
+      { label: "View research & code", href: "https://github.com/JoshGutierrez56/macro-regime-portfolio" },
+    ],
+  },
+  {
     id: "customization",
     number: "01",
     title: "The cost of customization",

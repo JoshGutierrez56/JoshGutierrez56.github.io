@@ -11,6 +11,7 @@ export const featuredSelection = [
 ] as const;
 
 export const moreProjectIds = [
+  "macro-regime",
   "news-research", "macro-hmm", "risk-parity", "housing-forest", "covenant-risk",
   "corporate-niche", "garch-volatility", "deep-momentum", "trading-floor", "real-estate-risk",
 ];

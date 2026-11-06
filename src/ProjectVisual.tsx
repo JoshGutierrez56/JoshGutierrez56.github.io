@@ -123,6 +123,7 @@ function CorporateNiche() {
 }
 
 export default function ProjectVisual({ id }: { id: string }) {
+  if (id === "macro-regime") return <figure><a href="/assets/macro-regime/index.html"><img src="/assets/macro-regime/powerbi-performance.png" alt="Power BI performance report: earlier IR 1.06 versus later -0.48" style={{width:"100%",height:"auto"}} loading="lazy" /></a><figcaption>Native Power BI screenshot. Open the separate public results companion to compare samples and costs.</figcaption></figure>;
   if (id === "optlab" || id === "risk-parity" || id === "macro-hmm" || id === "garch-volatility") return <QuantLibraryVisual id={id} />;
   if (id === "pure-news" || id === "trading-floor") return <Frame id={id} label={id === "pure-news" ? "From source to research question" : "Practice, explain, replay"} caption={id === "pure-news" ? "A sourced example from the original disclosure-review workflow." : "Explore the original simulator's European-call example, one expiry price at a time."}><ProductPreview id={id} /></Frame>;
   switch (id) {
