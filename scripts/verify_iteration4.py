@@ -13,7 +13,7 @@ with sync_playwright() as pw:
     page = browser.new_page(viewport={'width': 1440, 'height': 1000}, reduced_motion='reduce')
     page.on('pageerror', lambda error: report['errors'].append(str(error)))
     page.goto(BASE, wait_until='networkidle')
-    expect(page.locator('.a-hero-copy a[href="mailto:gutierrewz.jos@northeastern.edu"]')).to_be_visible()
+    expect(page.locator('.a-hero-copy a[href="mailto:gutierrez.jos@northeastern.edu"]')).to_be_visible()
     expect(page.locator('.a-hero-copy a[href="https://www.linkedin.com/in/josh-gutierrez-mba-msf-55375a142/"]')).to_be_visible()
     page.locator('.a-explore-disclosure summary').click()
     expect(page.get_by_role('navigation', name='Explore the portfolio').get_by_role('link')).to_have_count(6)
