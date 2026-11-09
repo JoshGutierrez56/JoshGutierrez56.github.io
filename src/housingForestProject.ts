@@ -8,7 +8,7 @@ export const project: Project = {
   category: "ML & deep learning",
   status: "Historical walk-forward study",
   question: "Does a random forest improve a housing-index forecast beyond simply using last month's value?",
-  contribution: "A 100-tree scikit-learn ensemble with 14 inputs, expanding-window monthly refits, fixed seed, saved predictions, and a matched lag-one benchmark across 61 evaluation months.",
+  contribution: "Evaluated a 100-tree random forest against a matched persistence baseline across 61 months, using 14 inputs, expanding-window refits, a fixed seed, and saved predictions.",
   result: "Random-forest R² was 0.978, but RMSE was 5.58 index points versus 2.78 for lag-one persistence: about twice the error.",
   limitation: "Historical, current-vintage data with contemporaneous macro inputs. Release timing and revisions are not controlled; this is not a real-time forecasting result. The archived evaluation snapshot is supplied separately from the original notebook repository.",
   methods: ["scikit-learn", "Random forest", "Expanding-window refits", "Baseline comparison"],

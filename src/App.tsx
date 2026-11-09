@@ -1,666 +1,414 @@
-import { useEffect, useMemo, useState } from "react";
-import { categories, github, projects, scenarios, type Category } from "./content";
-import ProjectCard from "./ProjectCard";
-import { DecisionExplorer, researchMethods } from "./ResearchBreadth";
-import { stories } from "./stories";
-import { outcomes } from "./outcomes";
-import { featuredProjects, featuredSelection, isFeatured, linkedin, moreProjects } from "./projectSelection";
+import ExplorePage, { ExploreNavigation, exploreTabs } from "./atlas/ExplorePages";
+import { useSiteMotion } from "./atlas/Motion";
+import { useEffect, useRef, useState } from "react";
+import { projects, github } from "./content";
+import Home from "./atlas/Home";
+import Library, { Compare } from "./atlas/Library";
+import CaseStudy from "./atlas/CaseStudy";
+import Lab from "./atlas/Lab";
+import Methods from "./atlas/Methods";
+import About from "./atlas/About";
+import { ContactLinks } from "./atlas/Contact";
+import { Arrow, EvidenceLabel, PageHeading } from "./atlas/Shared";
+import { pageTitles, projectUrl, shortNames } from "./atlas/data";
 
-
-function Arrow({ diagonal = false }: { diagonal?: boolean }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" width="18" height="18">
-      <path
-        d={diagonal ? "M6 18 18 6M6 6h12v12" : "M4 12h15m-6-6 6 6-6 6"}
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-export default function App() {
-  const [category, setCategory] = useState<Category>("All work");
-  const [query, setQuery] = useState("");
-  const [method, setMethod] = useState<(typeof scenarios)[number]["id"]>("turnover");
-  const [account, setAccount] = useState(1000000);
-  const [metric, setMetric] = useState<"te" | "turnover">("te");
-  const [researchLens, setResearchLens] = useState("portfolio");
-  const [expanded, setExpanded] = useState<string | null>(null);
-  const [libraryOpen, setLibraryOpen] = useState<string | null>(null);
-  const [scrollTarget, setScrollTarget] = useState<string | null>(null);
-  const showProject = (id: string) => {
-    setCategory("All work");
-    setQuery("");
-    setExpanded(id);
-    setLibraryOpen(isFeatured(id) ? null : id);
-    setScrollTarget(id);
+const nav = [
+  ["/", "Home"],
+  ["/research/", "Research"],
+  ["/lab/", "Decision Lab"],
+  ["/methods/", "Methods"],
+  ["/about/", "About"],
+];
+const normalize = (path: string) =>
+  path === "/" ? path : `/${path.split("/").filter(Boolean).join("/")}/`;
+export default function App({ initialPath = "/" }: { initialPath?: string }) {
+  const [path, setPath] = useState(normalize(initialPath));
+  const [saved, setSaved] = useState<string[]>([]);
+  const [paused, setPaused] = useState(false);
+  useSiteMotion(path, paused);
+  const [menu, setMenu] = useState(false);
+  const [search, setSearch] = useState("");
+  const [notice, setNotice] = useState("");
+  const [progress, setProgress] = useState(0);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const searchButton = useRef<HTMLButtonElement>(null);
+  const hydrated = useRef(false);
+  const routeProject = path.match(/^\/research\/([^/]+)\/$/)?.[1];
+  const project = projects.find((p) => p.id === routeProject);
+  const title = project
+    ? `${shortNames[project.id]} | Josh Gutierrez`
+    : pageTitles[path] || "Page not found | Josh Gutierrez";
+  const closeSearch = () => {
+    dialog.current?.close();
+    searchButton.current?.focus();
+  };
+  const openSearch = () => {
+    setSearch("");
+    dialog.current?.showModal();
+  };
+  const navigate = (next: string) => {
+    const destination = new URL(next, location.href);
+    const normalized = normalize(destination.pathname);
+    const fullPath = normalized + destination.search + destination.hash;
+    if (location.pathname + location.search + location.hash !== fullPath)
+      history.pushState({}, "", fullPath);
+    else {
+      setMenu(false);
+      dialog.current?.close();
+      return;
+    }
+    // A same-page link can change filters without remounting the route.
+    if (normalized === path) window.dispatchEvent(new PopStateEvent("popstate"));
+    setPath(normalized);
+    setMenu(false);
+    dialog.current?.close();
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
   useEffect(() => {
-    const followHash = () => {
-      const id = window.location.hash.replace("#project-", "");
-      if (projects.some((project) => project.id === id)) showProject(id);
+    try {
+      const value = JSON.parse(
+        localStorage.getItem("jg-research-comparison") || "[]",
+      );
+      if (Array.isArray(value))
+        setSaved(
+          value
+            .filter(
+              (id: unknown) =>
+                typeof id === "string" && projects.some((p) => p.id === id),
+            )
+            .slice(0, 3),
+        );
+      setPaused(localStorage.getItem("jg-motion") === "paused");
+    } catch {
+      /* Storage is optional. */
+    }
+    const followLocation = () => {
+      const id = location.hash.replace("#project-", "");
+      if (
+        location.hash.startsWith("#project-") &&
+        projects.some((p) => p.id === id)
+      ) {
+        history.replaceState({}, "", projectUrl(id));
+        setPath(projectUrl(id));
+        window.scrollTo(0, 0);
+        return;
+      }
+      const aliases: Record<string, string> = {
+        "#work": "/research/",
+        "#more-projects": "/research/",
+        "#tradeoffs": "/lab/",
+        "#about": "/about/",
+        "#approach": "/methods/",
+        "#explore": "/research/",
+        "#home": "/",
+      };
+      if (aliases[location.hash]) {
+        history.replaceState({}, "", aliases[location.hash]);
+        setPath(aliases[location.hash]);
+        window.scrollTo(0, 0);
+      } else setPath(normalize(location.pathname));
     };
-    followHash();
-    window.addEventListener("hashchange", followHash);
-    return () => window.removeEventListener("hashchange", followHash);
+    followLocation();
+    const keys = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        openSearch();
+      }
+    };
+    const scroll = () => {
+      const total = document.documentElement.scrollHeight - innerHeight;
+      setProgress(total > 0 ? window.scrollY / total : 0);
+    };
+    window.addEventListener("popstate", followLocation);
+    window.addEventListener("hashchange", followLocation);
+    window.addEventListener("keydown", keys);
+    window.addEventListener("scroll", scroll, { passive: true });
+    scroll();
+    return () => {
+      window.removeEventListener("popstate", followLocation);
+      window.removeEventListener("hashchange", followLocation);
+      window.removeEventListener("keydown", keys);
+      window.removeEventListener("scroll", scroll);
+    };
   }, []);
   useEffect(() => {
-    if (!scrollTarget) return;
-    const target = document.getElementById(`project-${scrollTarget}`);
-    target?.scrollIntoView({ block: "start" });
-    const focusTarget = target?.matches("details") ? target.querySelector<HTMLElement>(":scope > summary") : target;
-    focusTarget?.focus({ preventScroll: true });
-    setScrollTarget(null);
-  }, [scrollTarget]);
-  const visible = useMemo(
-    () =>
-      projects.filter(
-        (project) =>
-          (category === "All work" || project.category === category) &&
-          [project.title, project.question, project.result, project.category, stories[project.id].subtitle, outcomes[project.id].finding, ...project.methods]
-            .join(" ")
-            .toLowerCase()
-            .includes(query.trim().toLowerCase()),
-      ),
-    [category, query],
-  );
-  const selected = scenarios.find((item) => item.id === method) ?? scenarios[2];
-  const featuredVisible = featuredProjects.filter((project) => visible.includes(project));
-  const moreVisible = moreProjects.filter((project) => visible.includes(project));
-  const isFiltering = Boolean(query || category !== "All work");
-  const toggleStory = (id: string) => {
-    const opening = expanded !== id;
-    setExpanded(opening ? id : null);
-    if (opening) setScrollTarget(id);
+    document.title = title;
+    if (hydrated.current)
+      document
+        .querySelector<HTMLElement>("main h1")
+        ?.focus({ preventScroll: true });
+    hydrated.current = true;
+    const canonical = document.querySelector<HTMLLinkElement>(
+      'link[rel="canonical"]',
+    );
+    if (canonical) canonical.href = `https://joshgutierrez56.github.io${path}`;
+    setProgress(0);
+  }, [path, title]);
+  const save = (id: string) => {
+    const present = saved.includes(id);
+    if (!present && saved.length >= 3) {
+      setNotice(
+        "Your comparison holds three projects. Remove one to add another.",
+      );
+      return;
+    }
+    const next = present ? saved.filter((s) => s !== id) : [...saved, id];
+    setSaved(next);
+    setNotice(
+      present ? "Removed from your comparison." : "Added to your comparison.",
+    );
+    try {
+      localStorage.setItem("jg-research-comparison", JSON.stringify(next));
+    } catch {
+      /* Keep in-memory state. */
+    }
   };
-  const money = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(value);
-  const annualCost = (account * selected.cost) / 10000;
-  const savings = (account * (scenarios[1].cost - selected.cost)) / 10000;
-  const axisMax = metric === "te" ? 2 : 20;
-  const metricLabel = metric === "te" ? "Realized gross tracking error" : "Annual one-way turnover";
-  const reset = () => {
-    setCategory("All work");
-    setQuery("");
+  const toggleMotion = () => {
+    const next = !paused;
+    setPaused(next);
+    try {
+      localStorage.setItem("jg-motion", next ? "paused" : "playing");
+    } catch {
+      /* Keep in-memory state. */
+    }
   };
-
+  const pageMatches = [...nav, ...exploreTabs].filter(([, label]) => label.toLowerCase().includes(search.trim().toLowerCase()));
+  const matches = projects
+    .filter((p) =>
+      [p.id, p.title, p.question, shortNames[p.id], p.category, ...p.methods]
+        .join(" ")
+        .toLowerCase()
+        .includes(search.toLowerCase()),
+    )
+    .slice(0, 8);
   return (
-    <div className="portfolio-root" onClick={(event) => {
-      const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#project-"]');
-      const id = link?.getAttribute("href")?.replace("#project-", "");
-      if (id && projects.some((project) => project.id === id)) showProject(id);
-    }}>
-      <a className="p-skip" href="#main">
+    <div
+      className={`atlas-root ${paused ? "motion-paused" : ""}`}
+      onClick={(e) => {
+        if (
+          e.defaultPrevented ||
+          e.button !== 0 ||
+          e.metaKey ||
+          e.ctrlKey ||
+          e.shiftKey ||
+          e.altKey
+        )
+          return;
+        const a = (e.target as Element).closest<HTMLAnchorElement>("a[href]");
+        if (!a || a.target || a.hasAttribute("download")) return;
+        const url = new URL(a.href, location.href);
+        if (
+          url.origin !== location.origin ||
+          url.pathname.startsWith("/assets/")
+        )
+          return;
+        if (url.hash && !url.hash.startsWith("#project-")) return;
+        if (url.hash.startsWith("#project-")) {
+          e.preventDefault();
+          navigate(projectUrl(url.hash.replace("#project-", "")));
+          return;
+        }
+        const target = normalize(url.pathname);
+        if (
+          pageTitles[target] ||
+          projects.some((p) => projectUrl(p.id) === target)
+        ) {
+          e.preventDefault();
+          navigate(target + url.search + url.hash);
+        }
+      }}
+    >
+      <a className="a-skip" href="#main">
         Skip to content
       </a>
-      <header className="p-header p-shell">
-        <a className="p-brand" href="#home" aria-label="Josh Gutierrez home">
-          <span className="p-monogram">
-            JG<span>.</span>
-          </span>
-          <span className="p-brand-name">Josh Gutierrez</span>
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#work" onClick={reset}>Featured</a>
-          <a href="#more-projects" onClick={reset}>More projects</a>
-          <a href="#about">About</a>
-        </nav>
-        <a className="p-github" href={github} target="_blank" rel="noreferrer">
-          GitHub <Arrow diagonal />
-        </a>
-      </header>
-
-      <main id="main">
-        <section id="home" className="p-hero p-shell" aria-labelledby="hero-heading">
-          <div className="p-hero-copy">
-            <p className="p-eyebrow">
-              <span className="p-dot" /> Josh Gutierrez / Investment research
-            </p>
-            <h1 id="hero-heading">
-              Investment research.
-              <br />
-              <span>Built for decisions.</span>
-            </h1>
-            <p className="p-hero-intro">
-              I build constrained portfolios, test whether models add value, and turn corporate
-              disclosures into traceable research. Start with the finding. Inspect the evidence.
-            </p>
-            <div className="p-hero-actions">
-              <a className="p-button" href="#work" onClick={reset}>
-                Explore my top six <Arrow />
+      <div
+        className="a-progress"
+        style={{ transform: `scaleX(${progress})` }}
+        aria-hidden="true"
+      />
+      <header className="a-header">
+        <div className="a-shell a-header-inner">
+          <a href="/" className="a-brand" aria-label="JG. Josh Gutierrez Research Atlas home">
+            <span>
+              JG<i>.</i>
+            </span>
+            <span>
+              JOSH GUTIERREZ<small>RESEARCH ATLAS</small>
+            </span>
+          </a>
+          <nav
+            className={menu ? "is-open" : ""}
+            aria-label="Primary navigation"
+            id="primary-nav"
+          >
+            {nav.map(([url, label]) => (
+              <a
+                key={url}
+                href={url}
+                aria-current={
+                  (url === "/" ? path === "/" : path.startsWith(url))
+                    ? "page"
+                    : undefined
+                }
+              >
+                {label}
               </a>
-              <a className="p-text-link" href="#tradeoffs">
-                Explore the research decisions <Arrow />
-              </a>
-            </div>
-            <a className="p-hero-proof" href="#project-customization">
-              <span className="p-label">Portfolio customization / historical result</span>
-              <strong>35.5% median reduction in tracking error.</strong>
-              <span>Minimum-risk versus proportional allocation · nine scenarios · net of modeled costs <Arrow /></span>
+            ))}
+            <div className="a-mobile-explore"><span className="a-eyebrow">MORE WAYS TO EXPLORE</span>{exploreTabs.map(([url,label]) => <a key={url} href={url} aria-current={path===url ? "page" : undefined}>{label}</a>)}</div>
+          </nav>
+          <div className="a-header-tools">
+            <button
+              className="a-search-trigger"
+              onClick={openSearch}
+              ref={searchButton}
+              aria-label="Search site"
+            >
+              <span aria-hidden="true">&#8981;</span>
+              <kbd>Ctrl K</kbd>
+            </button>
+            <a
+              className="a-compare-link"
+              href="/compare/"
+              aria-label={`Compare ${saved.length} projects`}
+            >
+              Compare <span>{saved.length}</span>
             </a>
-            <div className="p-hero-foot">
-              <span>MBA + MS in Finance</span>
-              <span>
-                Institutional perspective.
-                <br />
-                Independent research.
-              </span>
-            </div>
+            <button
+              className="a-menu-toggle"
+              aria-expanded={menu}
+              aria-controls="primary-nav"
+              onClick={() => setMenu(!menu)}
+            >
+              {menu ? "Close" : "Menu"}
+            </button>
           </div>
-          <figure className="p-hero-art">
-            <div className="p-image-frame">
-              <img
-                src="/assets/research-cover.webp"
-                alt="Abstract physical balance of sculptural forms, illustrating portfolio tradeoffs"
-                fetchPriority="high"
-                width="1200"
-                height="1200"
-              />
-            </div>
-            <figcaption>
-              <span>01 / A study in tradeoffs</span>
-              <span>Conceptual illustration, not data</span>
-            </figcaption>
-          </figure>
-        </section>
-
-        <section id="work" className="p-work p-shell p-section" aria-labelledby="work-heading">
-          <div id="start" className="p-anchor" />
-          <div className="p-section-heading">
+        </div>
+      </header>
+      <ExploreNavigation path={path} />
+      <main id="main" key={path}>
+        {path === "/" ? (
+          <Home saved={saved} onSave={save} paused={paused} />
+        ) : path === "/research/" ? (
+          <Library saved={saved} onSave={save} />
+        ) : path === "/lab/" ? (
+          <Lab />
+        ) : path === "/methods/" ? (
+          <Methods />
+        ) : path === "/about/" ? (
+          <About />
+        ) : path === "/compare/" ? (
+          <Compare saved={saved} onSave={save} />
+        ) : exploreTabs.some(([href]) => href === path) ? (
+          <ExplorePage path={path} />
+        ) : project ? (
+          <CaseStudy id={project.id} saved={saved} onSave={save} />
+        ) : (
+          <div className="a-shell">
+            <PageHeading
+              label="404 / A DIFFERENT PATH"
+              title="That page is not here."
+              description="The research library is a good place to find your next question."
+            />
+            <a href="/research/" className="a-button">
+              Open the library <Arrow />
+            </a>
+          </div>
+        )}
+      </main>
+      <footer className="a-footer">
+        <div className="a-shell">
+          <div className="a-footer-top">
+            <a className="a-footer-name" href="/">
+              Josh Gutierrez<span>Questions. Models. Judgment.</span>
+            </a>
             <div>
-              <p className="p-eyebrow">01 / Six featured projects</p>
-              <h2 id="work-heading">What the work delivers.<br /><span>Why it matters.</span></h2>
+              <a href="/research/">
+                Research <Arrow />
+              </a>
+              <a href="/about/">
+                About & experience <Arrow />
+              </a>
+              <a href={github} target="_blank" rel="noreferrer">
+                GitHub <Arrow />
+              </a>
+              <ContactLinks compact />
             </div>
-            <p>Six projects, each led by a finding or a working capability. Explore the original exhibits, then open the evidence and implementation when you want more detail.</p>
           </div>
-          <nav className="p-featured-index" aria-label="Jump to a featured project">
-            {featuredSelection.map((project, index) => (
-              <a key={project.id} href={`#project-${project.id}`}>
-                <span className="p-index-number">0{index + 1}</span>
-                <span><strong>{project.label}</strong><small>{project.area}</small></span>
+          <EvidenceLabel />
+          <div className="a-footer-bottom">
+            <span>&copy; {new Date().getFullYear()} Josh Gutierrez</span>
+            <button onClick={toggleMotion} aria-pressed={paused}>
+              {paused ? "Resume ambient motion" : "Pause ambient motion"}
+            </button>
+            <a href="#main">Back to top &uarr;</a>
+          </div>
+        </div>
+      </footer>
+      <div className="a-status" role="status">
+        {notice && (
+          <>
+            <span>{notice}</span>
+            <a href="/compare/">View comparison</a>
+            <button
+              aria-label="Dismiss notification"
+              onClick={() => setNotice("")}
+            >
+              &times;
+            </button>
+          </>
+        )}
+      </div>
+      <dialog
+        className="a-search-dialog"
+        ref={dialog}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeSearch();
+        }}
+        aria-labelledby="site-search-title"
+      >
+        <div>
+          <div className="a-dialog-top">
+            <h2 id="site-search-title">Find your next question.</h2>
+            <button onClick={closeSearch} aria-label="Close search">
+              Esc &times;
+            </button>
+          </div>
+          <input
+            autoFocus
+            aria-label="Search projects and pages"
+            placeholder="Search projects, methods, or site sections..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <div className="a-search-results">
+            {pageMatches.length > 0 && (
+              <nav aria-label="Quick navigation">
+                {pageMatches.map(([url, label]) => (
+                  <a key={url} href={url}>
+                    {label}
+                    <Arrow />
+                  </a>
+                ))}
+              </nav>
+            )}
+            <p className="a-eyebrow">
+              {search ? "MATCHING RESEARCH" : "START WITH A PROJECT"}
+            </p>
+            {matches.map((p) => (
+              <a key={p.id} href={projectUrl(p.id)}>
+                <span>
+                  {shortNames[p.id]}
+                  <small>{p.category}</small>
+                </span>
                 <Arrow />
               </a>
             ))}
-          </nav>
-          <div className="p-collection-links">
-            <a href="#more-projects" onClick={reset}>Browse {moreProjects.length} more projects <Arrow /></a>
-            <a href="#project-deep-momentum">Explore the trained LSTM <Arrow /></a>
+            {matches.length === 0 && pageMatches.length === 0 && (
+              <p>No results. Try risk, portfolio, or NLP.</p>
+            )}
           </div>
-          <div className="p-work-tools">
-            <div className="p-filter-group" role="group" aria-label="Filter projects by category">
-              {categories.map((item) => (
-                <button key={item} type="button" aria-pressed={category === item}
-                  className={category === item ? "is-active" : ""} onClick={() => setCategory(item)}>
-                  {item}
-                </button>
-              ))}
-            </div>
-            <label className="p-search">
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" strokeWidth="1.5" />
-                <path d="m16 16 5 5" stroke="currentColor" strokeWidth="1.5" />
-              </svg>
-              <span className="p-sr-only">Search projects</span>
-              <input type="search" placeholder={`Search all ${projects.length} projects...`} value={query}
-                onChange={(event) => setQuery(event.target.value)} />
-            </label>
-          </div>
-          <div className="p-results-meta">
-            <p role="status" aria-live="polite">
-              {isFiltering ? `${visible.length} of ${projects.length} projects` : `${featuredVisible.length} featured projects`}
-              <span aria-hidden="true"> &middot; </span>
-              {isFiltering && `${featuredVisible.length} featured / `}{moreVisible.length} more
-            </p>
-            {isFiltering ? <button type="button" onClick={reset}>Reset filters</button>
-              : <a href="#more-projects">Jump to more projects <Arrow /></a>}
-          </div>
-          <div className="p-project-list" aria-label="Featured projects">
-            {featuredVisible.map((project) => (
-              <ProjectCard key={project.id} project={project}
-                number={`0${featuredProjects.indexOf(project) + 1}`}
-                expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
-            ))}
-          </div>
-          {featuredVisible.length === 0 && moreVisible.length > 0 && (
-            <p className="p-filter-notice">Your matches are in <a href="#more-projects">More projects <Arrow /></a> below.</p>
-          )}
-          {visible.length === 0 && (
-            <div className="p-empty">
-              <h3>No projects match this combination.</h3>
-              <p>Try a broader search, or return to all {projects.length} projects.</p>
-              <button className="p-button" type="button" onClick={reset}>Show all work <Arrow /></button>
-            </div>
-          )}
-          {(moreVisible.length > 0 || !isFiltering) && (
-            <section id="more-projects" className="p-more-projects" aria-labelledby="more-heading">
-              <div className="p-more-heading">
-                <div><p className="p-eyebrow">More findings & tools</p><h2 id="more-heading">More projects<span> / {moreVisible.length}</span></h2></div>
-                <p>Additional work in neural networks, real estate, credit risk, and more. Each summary tells you what the project contributes before you open it.</p>
-              </div>
-              <div className="p-library-list">
-                {moreVisible.map((project) => (
-                  <details className="p-library-item" id={`project-${project.id}`} key={project.id} open={libraryOpen === project.id}>
-                    <summary onClick={(event) => {
-                      event.preventDefault();
-                      const opening = libraryOpen !== project.id;
-                      setLibraryOpen(opening ? project.id : null);
-                      if (opening) setExpanded(project.id);
-                    }}>
-                      <span className="p-library-label">
-                        <span className="p-library-meta">{project.category} &middot; {project.status}</span>
-                        <strong>{project.title}</strong>
-                        <span className="p-library-description">{outcomes[project.id].finding}</span>
-                      </span>
-                      <span className="p-library-action">{libraryOpen === project.id ? "Close" : "Explore"}<Arrow /></span>
-                    </summary>
-                    <ProjectCard project={project} embedded number={String(moreProjects.indexOf(project) + featuredProjects.length + 1).padStart(2, "0")}
-                      expanded={expanded === project.id} onToggle={() => toggleStory(project.id)} />
-                  </details>
-                ))}
-              </div>
-              <a className="p-back-featured" href="#work" onClick={reset}>Back to the featured six <Arrow /></a>
-            </section>
-          )}
-        </section>
-
-        <section id="tradeoffs" className="p-scenario-wrap" aria-labelledby="scenario-heading">
-          <div className="p-shell p-section">
-            <div className="p-section-heading">
-              <div>
-                <p className="p-eyebrow">02 / Research in action</p>
-                <h2 id="scenario-heading">
-                  See what changes
-                  <br />
-                  <span>the decision.</span>
-                </h2>
-              </div>
-              <p>
-                Less trading can buy very little cost relief. A simple forecast can beat a complex
-                model. Explore the evidence behind four investment and research decisions.
-              </p>
-            </div>
-            <DecisionExplorer selected={researchLens} onChange={setResearchLens} />
-            {researchLens === "portfolio" && <div className="p-portfolio-decision">
-            <div className="p-decision-context"><h3>60% less trading bought only $110 of annual cost relief per $1 million.</h3><p>It also added about 27 basis points of tracking error versus minimum-risk allocation in the no-gold account. Compare the trade-off below. Saved 2014–2025 historical results with assumed costs; the slider only changes the illustrative dollar scale.</p></div>
-            <div className="p-scenario-grid">
-              <div className="p-scenario-controls">
-                <span className="p-label">Choose an allocation method</span>
-                <div className="p-methods" role="group" aria-label="Allocation method">
-                  {scenarios.map((item, index) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={method === item.id ? "is-active" : ""}
-                      aria-pressed={method === item.id}
-                      onClick={() => setMethod(item.id)}
-                    >
-                      <span className="p-method-number">0{index + 1}</span>
-                      <span>{item.name}</span>
-                      <span className="p-method-check" aria-hidden="true">
-                        {method === item.id ? "●" : "○"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                <p className="p-method-description">{selected.description}</p>
-                <div className="p-account">
-                  <label htmlFor="account-size">
-                    Illustrative account size{" "}
-                    <output htmlFor="account-size">{money(account)}</output>
-                  </label>
-                  <input
-                    id="account-size"
-                    type="range"
-                    min="250000"
-                    max="5000000"
-                    step="250000"
-                    value={account}
-                    aria-valuetext={money(account)}
-                    onChange={(event) => setAccount(Number(event.target.value))}
-                  />
-                  <div className="p-range-ends">
-                    <span>$250k</span>
-                    <span>$5m</span>
-                  </div>
-                  <p>
-                    Scales modeled annual cost only. Portfolio weights and historical risk
-                    statistics do not change.
-                  </p>
-                </div>
-              </div>
-              <div className="p-scenario-results">
-                <div className="p-scenario-title">
-                  <p className="p-eyebrow">Historical no-gold account</p>
-                  <span>2014 to 2025</span>
-                </div>
-                <h3>{selected.name}</h3>
-                <div className="p-metric-grid" aria-live="polite" aria-atomic="true">
-                  <div>
-                    <span className="p-metric-value">
-                      {selected.te.toFixed(2)}
-                      <small>%</small>
-                    </span>
-                    <span>Gross tracking error</span>
-                  </div>
-                  <div>
-                    <span className="p-metric-value">
-                      {selected.turnover.toFixed(2)}
-                      <small>%</small>
-                    </span>
-                    <span>Annual one-way turnover</span>
-                  </div>
-                  <div>
-                    <span className="p-metric-value">{money(annualCost)}</span>
-                    <span>Modeled annual cost</span>
-                  </div>
-                </div>
-                <div className="p-chart-heading">
-                  <span className="p-label">Compare all three methods</span>
-                  <label>
-                    <span className="p-sr-only">Chart metric</span>
-                    <select
-                      value={metric}
-                      onChange={(event) => setMetric(event.target.value as "te" | "turnover")}
-                    >
-                      <option value="te">Tracking error</option>
-                      <option value="turnover">Turnover</option>
-                    </select>
-                  </label>
-                </div>
-                <svg
-                  className="p-chart"
-                  viewBox="0 0 560 188"
-                  role="img"
-                  aria-labelledby="chart-title chart-description"
-                >
-                  <title id="chart-title">{`${metricLabel} by allocation method`}</title>
-                  <desc id="chart-description">
-                    {scenarios
-                      .map(
-                        (item) =>
-                          `${item.name}: ${item[metric].toFixed(2)} percent${item.id === method ? ", selected" : ""}`,
-                      )
-                      .join(". ")}
-                    . The data table below provides these values.
-                  </desc>
-                  {[0, 1, 2, 3, 4].map((tick) => (
-                    <g key={tick}>
-                      <line
-                        x1={150 + tick * 87.5}
-                        y1="12"
-                        x2={150 + tick * 87.5}
-                        y2="149"
-                        stroke="#d7e0ec"
-                        strokeDasharray={tick === 0 ? undefined : "3 4"}
-                      />
-                      <text
-                        x={150 + tick * 87.5}
-                        y="176"
-                        textAnchor="middle"
-                        className="p-chart-axis"
-                      >
-                        {((axisMax / 4) * tick).toFixed(metric === "te" ? 1 : 0)}%
-                      </text>
-                    </g>
-                  ))}
-                  {scenarios.map((item, index) => (
-                    <g key={item.id}>
-                      <text
-                        x="0"
-                        y={39 + index * 48}
-                        className={
-                          item.id === method ? "p-chart-label is-selected" : "p-chart-label"
-                        }
-                      >
-                        {item.short}
-                      </text>
-                      <rect
-                        x="150"
-                        y={22 + index * 48}
-                        width={(item[metric] / axisMax) * 350}
-                        height="25"
-                        rx="2"
-                        fill={item.id === method ? "#254da4" : "#bbcbe2"}
-                      />
-                      <text
-                        x={158 + (item[metric] / axisMax) * 350}
-                        y={39 + index * 48}
-                        className="p-chart-value"
-                      >
-                        {item[metric].toFixed(2)}%
-                      </text>
-                    </g>
-                  ))}
-                </svg>
-                <svg
-                  className="p-chart-mobile"
-                  viewBox="0 0 300 208"
-                  role="img"
-                  aria-labelledby="mobile-chart-title mobile-chart-description"
-                >
-                  <title id="mobile-chart-title">{`${metricLabel} by allocation method`}</title>
-                  <desc id="mobile-chart-description">
-                    {scenarios
-                      .map((item) => `${item.name}: ${item[metric].toFixed(2)} percent`)
-                      .join(". ")}
-                  </desc>
-                  {scenarios.map((item, index) => (
-                    <g key={item.id}>
-                      <text x="0" y={18 + index * 60} fill="#263348" fontSize="13">
-                        {item.short}
-                      </text>
-                      <text
-                        x="300"
-                        y={18 + index * 60}
-                        textAnchor="end"
-                        fill="#254da4"
-                        fontSize="13"
-                      >
-                        {item[metric].toFixed(2)}%
-                      </text>
-                      <rect x="0" y={28 + index * 60} width="300" height="19" fill="#e8edf4" />
-                      <rect
-                        x="0"
-                        y={28 + index * 60}
-                        width={(item[metric] / axisMax) * 300}
-                        height="19"
-                        fill={item.id === method ? "#254da4" : "#bbcbe2"}
-                      />
-                    </g>
-                  ))}
-                  <text x="0" y="199" fontSize="11" fill="#59677c">
-                    0%
-                  </text>
-                  <text x="300" y="199" textAnchor="end" fontSize="11" fill="#59677c">
-                    {axisMax}%
-                  </text>
-                </svg>
-                <p className="p-takeaway">
-                  {method === "turnover" ? (
-                    <>
-                      Compared with minimum-risk allocation, roughly 60% less turnover saved{" "}
-                      <strong>{money(savings)} a year</strong> at this account size, while realized
-                      gross tracking error rose by about 27 basis points.
-                    </>
-                  ) : method === "risk" ? (
-                    <>
-                      This method had the <strong>lowest realized tracking error</strong> in the
-                      no-gold comparison. It also traded more than either alternative.
-                    </>
-                  ) : (
-                    <>
-                      Redistribution without a risk model produced{" "}
-                      <strong>higher realized tracking error</strong> than both alternatives in this
-                      historical no-gold scenario.
-                    </>
-                  )}
-                </p>
-              </div>
-            </div>
-            <details className="p-data-detail">
-              <summary>
-                Read the data and assumptions <span aria-hidden="true">+</span>
-              </summary>
-              <div
-                className="p-table-scroll"
-                tabIndex={0}
-                role="region"
-                aria-label="No-gold scenario data table"
-              >
-                <table>
-                  <caption>
-                    Saved historical results. Annual modeled cost is scaled to {money(account)}.
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Method</th>
-                      <th scope="col">Gross TE</th>
-                      <th scope="col">Annual one-way turnover</th>
-                      <th scope="col">Annual cost rate</th>
-                      <th scope="col">Scaled annual cost</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {scenarios.map((item) => (
-                      <tr key={item.id} className={item.id === method ? "is-selected" : ""}>
-                        <th scope="row">
-                          {item.name}
-                          {item.id === method ? " (selected)" : ""}
-                        </th>
-                        <td>{item.te.toFixed(4)}%</td>
-                        <td>{item.turnover.toFixed(4)}%</td>
-                        <td>{item.cost.toFixed(4)} bp</td>
-                        <td>{money((account * item.cost) / 10000)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="p-assumptions">
-                <p>
-                  <strong>Cost assumption:</strong> 5 basis points per dollar bought or sold. Annual
-                  cost equals the saved annual cost rate multiplied by a constant illustrative
-                  account value. This is not an exact compounded-return benefit, a forecast, or
-                  guaranteed savings.
-                </p>
-                <p>
-                  <strong>Risk definition:</strong> tracking error is the annualized standard
-                  deviation of active daily returns. The chart uses gross tracking error; allocation
-                  costs are shown separately. Lower tracking error does not mean a higher return or
-                  a smaller cumulative return gap.
-                </p>
-              </div>
-              <div className="p-source-links">
-                <a href="/assets/no-gold-summary.csv" download>
-                  Download the three source rows <Arrow />
-                </a>
-                <a href="/assets/portfolio-case-study.md" download>
-                  Read methodology and limitations <Arrow />
-                </a>
-              </div>
-            </details>
-            <p className="p-scenario-note">
-              Historical research, not an investment recommendation. Fixed eight-ETF universe;
-              hypothetical restrictions and execution costs; no tax lots or calibrated market
-              impact.
-            </p>
-            </div>}
-          </div>
-        </section>
-
-        <section
-          id="approach"
-          className="p-approach p-shell p-section"
-          aria-labelledby="approach-heading"
-        >
-          <div className="p-section-heading">
-            <div>
-              <p className="p-eyebrow">03 / Capabilities in practice</p>
-              <h2 id="approach-heading">
-                Financial judgment.
-                <br />
-                <span>Demonstrated in the work.</span>
-              </h2>
-            </div>
-            <p>
-              Portfolio construction, model evaluation, risk analysis and research engineering.
-              Each capability below connects to something you can examine.
-            </p>
-          </div>
-          <div className="p-principles p-evidence-methods">
-            {researchMethods.map((item, index) => <article key={item.title}>
-              <span>0{index + 1} / {item.area}</span><h3>{item.title}</h3><p>{item.description}</p>
-              <div className="p-method-evidence">{item.links.map(link => <a key={link.id} href={`#project-${link.id}`}>{link.label} <Arrow /></a>)}</div>
-            </article>)}
-          </div>
-          <aside className="p-evidence-boundaries">
-            <strong>Different evidence, different claims.</strong>
-            <p>Historical studies estimate what happened in a defined sample. Synthetic experiments test mechanics under known assumptions. Software tests check implementation. A useful demo still needs independent user evaluation before claiming real-world benefit.</p>
-          </aside>
-        </section>
-
-        <section id="about" className="p-about-wrap" aria-labelledby="about-heading">
-          <div className="p-shell p-about">
-            <div>
-              <p className="p-eyebrow">04 / Behind the work</p>
-              <h2 id="about-heading">
-                Investment context.
-                <br />
-                Hands-on research.
-              </h2>
-            </div>
-            <div className="p-about-copy">
-              <p>
-                I connect investment questions to models, evidence and tools that an investment
-                team can examine. My work spans constrained allocation, model comparison,
-                disclosure research and risk analysis.
-              </p>
-              <p>
-                I’m Josh Gutierrez, an MBA and MS in Finance graduate from Northeastern University.
-                My background spans institutional portfolio analytics, fixed-income communication
-                and investment research, with prior experience at AEW Capital Management,
-                Loomis Sayles, Wellington Management and Prime Buchholz.
-              </p>
-              <p>
-                This portfolio presents independent and student research, not work products or
-                endorsements from former employers. It shows how I frame a decision, build and
-                check the analysis, and explain what the evidence supports.
-              </p>
-              <div className="p-about-capabilities" aria-label="Areas of work">
-                <div><strong>Investments</strong><span>Equities · fixed income · real estate · multi-asset portfolios</span></div>
-                <div><strong>Methods</strong><span>Optimization · econometrics · ML / NLP · simulation</span></div>
-                <div><strong>Delivery</strong><span>Python / SQL · reproducible studies · interactive research tools</span></div>
-              </div>
-              <p className="p-ownership">
-                I direct the research questions, investment interpretation, and project development.
-                These projects use AI-assisted development; the evidence and limitations remain part
-                of the work.
-              </p>
-              <div className="p-contact-links">
-                {linkedin && <a className="p-button" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn <Arrow diagonal /></a>}
-                <a className={linkedin ? "p-text-link" : "p-button"} href={github} target="_blank" rel="noreferrer">Explore my GitHub <Arrow diagonal /></a>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer className="p-footer p-shell">
-        <a className="p-brand" href="#home">
-          <span className="p-monogram">
-            JG<span>.</span>
-          </span>
-          <span>Josh Gutierrez</span>
-        </a>
-        <p>Questions first. Evidence always.</p>
-        <a href="#home">Back to top ↑</a>
-      </footer>
+        </div>
+      </dialog>
     </div>
   );
 }

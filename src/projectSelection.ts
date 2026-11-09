@@ -25,5 +25,6 @@ const findProject = (id: string) => {
 export const featuredProjects = featuredSelection.map(({ id }) => findProject(id));
 export const moreProjects = moreProjectIds.map(findProject);
 export const isFeatured = (id: string) => featuredProjects.some((project) => project.id === id);
-// Owner identified the previous destination as incorrect; awaiting the correct URL.
-export const linkedin: string | null = null;
+// Public contact destinations supplied and approved by Josh.
+export const linkedin = "https://www.linkedin.com/in/josh-gutierrez-mba-msf-55375a142/";
+export const contactEmail = "gutierrewz.jos@northeastern.edu";

@@ -10,7 +10,7 @@ export const project: Project = {
   question:
     "Can a property keep meeting its loan tests when interest rates move and covenant requirements tighten?",
   contribution:
-    "A seeded, 200,000-path Monte Carlo model of a five-year senior/mezzanine capital stack, combining mean-reverting rates, uncertain operating income, and quarterly covenant tests.",
+    "Examined quarterly covenant pressure across 200,000 seeded simulated paths for a five-year senior/mezzanine capital stack, combining mean-reverting rates and uncertain operating income.",
   result:
     "Under the case-study assumptions, 43.5% of simulated paths breached at least one covenant by year one, rising to 89.8% by year five.",
   limitation:
